@@ -1,0 +1,1718 @@
+[
+  {
+    "id": 0,
+    "name_ru": "Шут",
+    "arcana": "major",
+    "suit": null,
+    "rank": 0,
+    "keywords_upright": [
+      "новое начало",
+      "свобода",
+      "спонтанность"
+    ],
+    "keywords_reversed": [
+      "безрассудство",
+      "страх перемен",
+      "наивность"
+    ],
+    "short_upright": "Новый этап, доверие к жизни, готовность к приключению.",
+    "short_reversed": "Необдуманный шаг, страх неизвестности, хаос.",
+    "image_path": "data/images/rws/0.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 1,
+    "name_ru": "Маг",
+    "arcana": "major",
+    "suit": null,
+    "rank": 1,
+    "keywords_upright": [
+      "воля",
+      "мастерство",
+      "ресурсы"
+    ],
+    "keywords_reversed": [
+      "манипуляция",
+      "нереализованный потенциал",
+      "обман"
+    ],
+    "short_upright": "Все ресурсы в руках, время действовать и проявлять волю.",
+    "short_reversed": "Обман или самообман, разбросанность, нехватка фокуса.",
+    "image_path": "data/images/rws/1.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 2,
+    "name_ru": "Верховная Жрица",
+    "arcana": "major",
+    "suit": null,
+    "rank": 2,
+    "keywords_upright": [
+      "интуиция",
+      "тайна",
+      "внутреннее знание"
+    ],
+    "keywords_reversed": [
+      "игнорирование интуиции",
+      "скрытность",
+      "поверхностность"
+    ],
+    "short_upright": "Доверься интуиции, ответ уже внутри тебя.",
+    "short_reversed": "Отрыв от внутреннего голоса, подавленная интуиция.",
+    "image_path": "data/images/rws/2.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 3,
+    "name_ru": "Императрица",
+    "arcana": "major",
+    "suit": null,
+    "rank": 3,
+    "keywords_upright": [
+      "изобилие",
+      "забота",
+      "творчество"
+    ],
+    "keywords_reversed": [
+      "зависимость",
+      "пустота",
+      "гиперопека"
+    ],
+    "short_upright": "Плодородие, рост, забота о себе и близких.",
+    "short_reversed": "Нехватка заботы, творческий застой, зависимость.",
+    "image_path": "data/images/rws/3.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 4,
+    "name_ru": "Император",
+    "arcana": "major",
+    "suit": null,
+    "rank": 4,
+    "keywords_upright": [
+      "структура",
+      "авторитет",
+      "стабильность"
+    ],
+    "keywords_reversed": [
+      "тирания",
+      "жёсткость",
+      "потеря контроля"
+    ],
+    "short_upright": "Порядок, дисциплина, уверенное руководство.",
+    "short_reversed": "Чрезмерный контроль, жёсткость, слабость власти.",
+    "image_path": "data/images/rws/4.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTf5cDS3Q-8QeC4DoKv-WEyawsAAp4TaxuKRyhJY00aKqUFN1gBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADnhNrG4pHKEl8"
+  },
+  {
+    "id": 5,
+    "name_ru": "Иерофант",
+    "arcana": "major",
+    "suit": null,
+    "rank": 5,
+    "keywords_upright": [
+      "традиция",
+      "наставничество",
+      "вера"
+    ],
+    "keywords_reversed": [
+      "догматизм",
+      "бунт",
+      "неортодоксальность"
+    ],
+    "short_upright": "Следование традициям, поиск учителя или системы.",
+    "short_reversed": "Слепое следование правилам или бунт против них.",
+    "image_path": "data/images/rws/5.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 6,
+    "name_ru": "Влюблённые",
+    "arcana": "major",
+    "suit": null,
+    "rank": 6,
+    "keywords_upright": [
+      "выбор",
+      "любовь",
+      "гармония"
+    ],
+    "keywords_reversed": [
+      "дисгармония",
+      "неверный выбор",
+      "разлад"
+    ],
+    "short_upright": "Важный выбор сердцем, гармония в отношениях.",
+    "short_reversed": "Разлад, сомнения в выборе, внутренний конфликт.",
+    "image_path": "data/images/rws/6.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 7,
+    "name_ru": "Колесница",
+    "arcana": "major",
+    "suit": null,
+    "rank": 7,
+    "keywords_upright": [
+      "победа",
+      "движение",
+      "решимость"
+    ],
+    "keywords_reversed": [
+      "потеря направления",
+      "агрессия",
+      "застой"
+    ],
+    "short_upright": "Целеустремлённое движение вперёд, триумф воли.",
+    "short_reversed": "Потеря курса, борьба без цели, застревание.",
+    "image_path": "data/images/rws/7.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTVtSCH_FTUn4lf26T9MoTb5moAAvsZaxuKRyBJqawv3GOliRQBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQAD-xlrG4pHIEl8"
+  },
+  {
+    "id": 8,
+    "name_ru": "Сила",
+    "arcana": "major",
+    "suit": null,
+    "rank": 8,
+    "keywords_upright": [
+      "мужество",
+      "терпение",
+      "внутренняя сила"
+    ],
+    "keywords_reversed": [
+      "слабость",
+      "сомнение в себе",
+      "грубость"
+    ],
+    "short_upright": "Мягкая внутренняя сила, терпение побеждает.",
+    "short_reversed": "Неуверенность, страх, потеря самообладания.",
+    "image_path": "data/images/rws/8.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTVtRp-xseT2rdcbo91GTBLsa0AAvoZaxuKRyBJgjUdSkkQrcoBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQAD-hlrG4pHIEl8"
+  },
+  {
+    "id": 9,
+    "name_ru": "Отшельник",
+    "arcana": "major",
+    "suit": null,
+    "rank": 9,
+    "keywords_upright": [
+      "уединение",
+      "поиск истины",
+      "мудрость"
+    ],
+    "keywords_reversed": [
+      "изоляция",
+      "одиночество",
+      "отчуждение"
+    ],
+    "short_upright": "Время для самоанализа, мудрость в тишине.",
+    "short_reversed": "Болезненная изоляция, избегание людей.",
+    "image_path": "data/images/rws/9.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 10,
+    "name_ru": "Колесо Фортуны",
+    "arcana": "major",
+    "suit": null,
+    "rank": 10,
+    "keywords_upright": [
+      "перемены",
+      "цикл",
+      "удача"
+    ],
+    "keywords_reversed": [
+      "застой",
+      "невезение",
+      "сопротивление переменам"
+    ],
+    "short_upright": "Перемены на пороге, цикл поворачивается в твою пользу.",
+    "short_reversed": "Застой, нежелание принять неизбежные перемены.",
+    "image_path": "data/images/rws/10.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 11,
+    "name_ru": "Справедливость",
+    "arcana": "major",
+    "suit": null,
+    "rank": 11,
+    "keywords_upright": [
+      "справедливость",
+      "истина",
+      "закон"
+    ],
+    "keywords_reversed": [
+      "несправедливость",
+      "предвзятость",
+      "нечестность"
+    ],
+    "short_upright": "Время честного суда, причина и следствие в действии.",
+    "short_reversed": "Несправедливое решение, избегание ответственности.",
+    "image_path": "data/images/rws/11.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 12,
+    "name_ru": "Повешенный",
+    "arcana": "major",
+    "suit": null,
+    "rank": 12,
+    "keywords_upright": [
+      "пауза",
+      "жертва",
+      "новый взгляд"
+    ],
+    "keywords_reversed": [
+      "сопротивление",
+      "бесполезная жертва",
+      "застой"
+    ],
+    "short_upright": "Пауза ради нового взгляда, добровольная жертва.",
+    "short_reversed": "Бессмысленное ожидание, нежелание менять угол зрения.",
+    "image_path": "data/images/rws/12.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 13,
+    "name_ru": "Смерть",
+    "arcana": "major",
+    "suit": null,
+    "rank": 13,
+    "keywords_upright": [
+      "трансформация",
+      "конец",
+      "обновление"
+    ],
+    "keywords_reversed": [
+      "сопротивление переменам",
+      "страх конца",
+      "стагнация"
+    ],
+    "short_upright": "Конец одного цикла и начало нового, трансформация.",
+    "short_reversed": "Цепляние за прошлое, страх отпустить.",
+    "image_path": "data/images/rws/13.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 14,
+    "name_ru": "Умеренность",
+    "arcana": "major",
+    "suit": null,
+    "rank": 14,
+    "keywords_upright": [
+      "баланс",
+      "терпение",
+      "гармония"
+    ],
+    "keywords_reversed": [
+      "дисбаланс",
+      "крайности",
+      "нетерпение"
+    ],
+    "short_upright": "Золотая середина, гармоничное смешение, терпение.",
+    "short_reversed": "Крайности, нарушенный баланс, поспешность.",
+    "image_path": "data/images/rws/14.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 15,
+    "name_ru": "Дьявол",
+    "arcana": "major",
+    "suit": null,
+    "rank": 15,
+    "keywords_upright": [
+      "зависимость",
+      "искушение",
+      "материализм"
+    ],
+    "keywords_reversed": [
+      "освобождение",
+      "осознание",
+      "разрыв цепей"
+    ],
+    "short_upright": "Зависимость или привязанность, теневая сторона.",
+    "short_reversed": "Осознание зависимости, шанс освободиться.",
+    "image_path": "data/images/rws/15.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 16,
+    "name_ru": "Башня",
+    "arcana": "major",
+    "suit": null,
+    "rank": 16,
+    "keywords_upright": [
+      "разрушение",
+      "внезапность",
+      "откровение"
+    ],
+    "keywords_reversed": [
+      "страх перемен",
+      "отсрочка краха",
+      "избегание"
+    ],
+    "short_upright": "Внезапное разрушение старого, шок ведёт к правде.",
+    "short_reversed": "Оттягивание неизбежного разрушения, страх.",
+    "image_path": "data/images/rws/16.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTXnoB9PkeroWOGOlV_c6t7dNAAAhgaaxuKRyBJFSz852Xc70sBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADGBprG4pHIEl8"
+  },
+  {
+    "id": 17,
+    "name_ru": "Звезда",
+    "arcana": "major",
+    "suit": null,
+    "rank": 17,
+    "keywords_upright": [
+      "надежда",
+      "вдохновение",
+      "исцеление"
+    ],
+    "keywords_reversed": [
+      "разочарование",
+      "потеря веры",
+      "отчаяние"
+    ],
+    "short_upright": "Надежда, вдохновение, свет после тьмы.",
+    "short_reversed": "Потеря веры, разочарование, пессимизм.",
+    "image_path": "data/images/rws/17.jpg",
+    "tg_file_id": "AgACAgIAAxkDAAIBh2mk1g9-KVB4LEc2gG-rH0lGcoukAAIDGmsbikcgST81qaCq2hTDAQADAgADdwADOgQ",
+    "tg_file_unique_id": "AQADAxprG4pHIEl8"
+  },
+  {
+    "id": 18,
+    "name_ru": "Луна",
+    "arcana": "major",
+    "suit": null,
+    "rank": 18,
+    "keywords_upright": [
+      "иллюзии",
+      "страхи",
+      "подсознание"
+    ],
+    "keywords_reversed": [
+      "преодоление страхов",
+      "ясность",
+      "раскрытие обмана"
+    ],
+    "short_upright": "Иллюзии, тревога, путь через туман подсознания.",
+    "short_reversed": "Рассеивание иллюзий, обман раскрывается.",
+    "image_path": "data/images/rws/18.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 19,
+    "name_ru": "Солнце",
+    "arcana": "major",
+    "suit": null,
+    "rank": 19,
+    "keywords_upright": [
+      "радость",
+      "успех",
+      "ясность"
+    ],
+    "keywords_reversed": [
+      "временные неудачи",
+      "приглушённая радость",
+      "задержка"
+    ],
+    "short_upright": "Радость, успех, ясность и тепло во всём.",
+    "short_reversed": "Радость приглушена, но свет рядом, небольшая задержка.",
+    "image_path": "data/images/rws/19.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 20,
+    "name_ru": "Суд",
+    "arcana": "major",
+    "suit": null,
+    "rank": 20,
+    "keywords_upright": [
+      "возрождение",
+      "призвание",
+      "оценка"
+    ],
+    "keywords_reversed": [
+      "самокритика",
+      "отказ от призвания",
+      "неприятие"
+    ],
+    "short_upright": "Призыв к обновлению, переосмысление пути.",
+    "short_reversed": "Игнорирование внутреннего зова, самокритика.",
+    "image_path": "data/images/rws/20.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 21,
+    "name_ru": "Мир",
+    "arcana": "major",
+    "suit": null,
+    "rank": 21,
+    "keywords_upright": [
+      "завершение",
+      "целостность",
+      "достижение"
+    ],
+    "keywords_reversed": [
+      "незавершённость",
+      "задержка финала",
+      "неудовлетворённость"
+    ],
+    "short_upright": "Цикл завершён, целостность, заслуженный итог.",
+    "short_reversed": "Чувство незавершённости, финал откладывается.",
+    "image_path": "data/images/rws/21.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTf5Q_mfvoDT_otTKuTnaZ0MREAAqATaxuKRyhJsGTYcAvT09ABAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADoBNrG4pHKEl8"
+  },
+  {
+    "id": 22,
+    "name_ru": "Туз Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 1,
+    "keywords_upright": [
+      "вдохновение",
+      "начало",
+      "энергия"
+    ],
+    "keywords_reversed": [
+      "задержка",
+      "нехватка энергии",
+      "ложный старт"
+    ],
+    "short_upright": "Вспышка вдохновения, энергия для нового начинания.",
+    "short_reversed": "Энергия на нуле, ложный старт, откладывание.",
+    "image_path": "data/images/rws/22.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 23,
+    "name_ru": "Двойка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 2,
+    "keywords_upright": [
+      "планирование",
+      "решение",
+      "амбиции"
+    ],
+    "keywords_reversed": [
+      "нерешительность",
+      "страх",
+      "плохое планирование"
+    ],
+    "short_upright": "Время планировать, мир в руках, выбирай направление.",
+    "short_reversed": "Нерешительность, страх выбрать путь.",
+    "image_path": "data/images/rws/23.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 24,
+    "name_ru": "Тройка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 3,
+    "keywords_upright": [
+      "расширение",
+      "перспектива",
+      "рост"
+    ],
+    "keywords_reversed": [
+      "препятствия",
+      "задержка",
+      "недальновидность"
+    ],
+    "short_upright": "Горизонты расширяются, рост и новые возможности.",
+    "short_reversed": "Задержки в расширении, недальновидность.",
+    "image_path": "data/images/rws/24.jpg",
+    "tg_file_id": "BQACAgIAAxkDAAIBdmmk1F1GkdMVCbglJJ3zicTP7hcGAALQmwACikcgSXUAAUb1_bIZ5zoE",
+    "tg_file_unique_id": "AgAD0JsAAopHIEk"
+  },
+  {
+    "id": 25,
+    "name_ru": "Четвёрка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 4,
+    "keywords_upright": [
+      "праздник",
+      "стабильность",
+      "гармония"
+    ],
+    "keywords_reversed": [
+      "нестабильность",
+      "конфликт",
+      "неуверенность"
+    ],
+    "short_upright": "Праздник, домашний уют, стабильная опора.",
+    "short_reversed": "Нестабильная опора, переходный период.",
+    "image_path": "data/images/rws/25.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 26,
+    "name_ru": "Пятёрка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 5,
+    "keywords_upright": [
+      "конфликт",
+      "соперничество",
+      "борьба"
+    ],
+    "keywords_reversed": [
+      "избегание конфликта",
+      "компромисс",
+      "внутренняя борьба"
+    ],
+    "short_upright": "Конкуренция, борьба за позицию, вызов.",
+    "short_reversed": "Уход от конфликта или внутренняя борьба.",
+    "image_path": "data/images/rws/26.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTVtSapqR_qGwuZ47f8dOLqBbMAAvwZaxuKRyBJ3SV_-vQDwCMBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQAD_BlrG4pHIEl8"
+  },
+  {
+    "id": 27,
+    "name_ru": "Шестёрка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 6,
+    "keywords_upright": [
+      "победа",
+      "признание",
+      "успех"
+    ],
+    "keywords_reversed": [
+      "падение",
+      "провал",
+      "самомнение"
+    ],
+    "short_upright": "Публичный успех, признание, триумф.",
+    "short_reversed": "Непризнание, провал после ожиданий.",
+    "image_path": "data/images/rws/27.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 28,
+    "name_ru": "Семёрка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 7,
+    "keywords_upright": [
+      "защита",
+      "стойкость",
+      "вызов"
+    ],
+    "keywords_reversed": [
+      "сдача",
+      "усталость",
+      "перегрузка"
+    ],
+    "short_upright": "Стой на своём, защищай позицию.",
+    "short_reversed": "Усталость от борьбы, желание сдаться.",
+    "image_path": "data/images/rws/28.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 29,
+    "name_ru": "Восьмёрка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 8,
+    "keywords_upright": [
+      "скорость",
+      "движение",
+      "прогресс"
+    ],
+    "keywords_reversed": [
+      "задержка",
+      "хаос",
+      "поспешность"
+    ],
+    "short_upright": "Быстрое развитие событий, стремительный прогресс.",
+    "short_reversed": "Задержки, хаос, слишком быстро или слишком медленно.",
+    "image_path": "data/images/rws/29.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 30,
+    "name_ru": "Девятка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 9,
+    "keywords_upright": [
+      "стойкость",
+      "выносливость",
+      "последний рубеж"
+    ],
+    "keywords_reversed": [
+      "выгорание",
+      "паранойя",
+      "отказ от борьбы"
+    ],
+    "short_upright": "Почти у цели, держись — осталось немного.",
+    "short_reversed": "Выгорание, чрезмерная бдительность, истощение.",
+    "image_path": "data/images/rws/30.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 31,
+    "name_ru": "Десятка Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 10,
+    "keywords_upright": [
+      "бремя",
+      "ответственность",
+      "тяжесть"
+    ],
+    "keywords_reversed": [
+      "освобождение",
+      "делегирование",
+      "облегчение"
+    ],
+    "short_upright": "Тяжёлая ноша, но ты несёшь её к цели.",
+    "short_reversed": "Пора делегировать, сбросить лишний груз.",
+    "image_path": "data/images/rws/31.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTf5U1IxyGAfgnJsXuRKsi2ULMAApwTaxuKRyhJ8Bf3raxf9RcBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADnBNrG4pHKEl8"
+  },
+  {
+    "id": 32,
+    "name_ru": "Паж Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 11,
+    "keywords_upright": [
+      "энтузиазм",
+      "открытие",
+      "любопытство"
+    ],
+    "keywords_reversed": [
+      "разочарование",
+      "незрелость",
+      "поспешность"
+    ],
+    "short_upright": "Новая идея, энтузиазм, жажда открытий.",
+    "short_reversed": "Поспешность, незрелая идея, разочарование.",
+    "image_path": "data/images/rws/32.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 33,
+    "name_ru": "Рыцарь Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 12,
+    "keywords_upright": [
+      "энергия",
+      "страсть",
+      "действие"
+    ],
+    "keywords_reversed": [
+      "импульсивность",
+      "агрессия",
+      "разбросанность"
+    ],
+    "short_upright": "Страстное движение к цели, смелость и энергия.",
+    "short_reversed": "Импульсивность, разбросанность, агрессия.",
+    "image_path": "data/images/rws/33.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 34,
+    "name_ru": "Королева Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 13,
+    "keywords_upright": [
+      "харизма",
+      "уверенность",
+      "тепло"
+    ],
+    "keywords_reversed": [
+      "деспотизм",
+      "ревность",
+      "неуверенность"
+    ],
+    "short_upright": "Харизма, тёплая уверенность, вдохновение для других.",
+    "short_reversed": "Ревность, деспотичность, потеря уверенности.",
+    "image_path": "data/images/rws/34.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 35,
+    "name_ru": "Король Жезлов",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": 14,
+    "keywords_upright": [
+      "лидерство",
+      "видение",
+      "предпринимательство"
+    ],
+    "keywords_reversed": [
+      "тирания",
+      "нетерпимость",
+      "завышенные ожидания"
+    ],
+    "short_upright": "Лидер с видением, уверенность в своём пути.",
+    "short_reversed": "Тиран, нетерпимость, навязывание своей воли.",
+    "image_path": "data/images/rws/35.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 36,
+    "name_ru": "Туз Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 1,
+    "keywords_upright": [
+      "любовь",
+      "новое чувство",
+      "интуиция"
+    ],
+    "keywords_reversed": [
+      "пустота",
+      "подавленные эмоции",
+      "упущенный шанс"
+    ],
+    "short_upright": "Новое чувство, эмоциональное начало, любовь.",
+    "short_reversed": "Эмоциональная пустота, подавленные чувства.",
+    "image_path": "data/images/rws/36.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 37,
+    "name_ru": "Двойка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 2,
+    "keywords_upright": [
+      "партнёрство",
+      "связь",
+      "взаимность"
+    ],
+    "keywords_reversed": [
+      "разрыв",
+      "дисбаланс",
+      "разлад"
+    ],
+    "short_upright": "Взаимное чувство, партнёрство, связь душ.",
+    "short_reversed": "Разлад в отношениях, нарушенный баланс.",
+    "image_path": "data/images/rws/37.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTf5TGNzbYqL75YsxNzjBL33U8AAp8TaxuKRyhJm8ph6uyR444BAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADnxNrG4pHKEl8"
+  },
+  {
+    "id": 38,
+    "name_ru": "Тройка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 3,
+    "keywords_upright": [
+      "праздник",
+      "дружба",
+      "радость"
+    ],
+    "keywords_reversed": [
+      "избыток",
+      "сплетни",
+      "одиночество"
+    ],
+    "short_upright": "Радость встречи, праздник, дружеская поддержка.",
+    "short_reversed": "Одиночество в толпе, сплетни, перебор.",
+    "image_path": "data/images/rws/38.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 39,
+    "name_ru": "Четвёрка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 4,
+    "keywords_upright": [
+      "апатия",
+      "созерцание",
+      "неудовлетворённость"
+    ],
+    "keywords_reversed": [
+      "пробуждение",
+      "новая мотивация",
+      "принятие"
+    ],
+    "short_upright": "Апатия, скука, не замечаешь то, что рядом.",
+    "short_reversed": "Пробуждение интереса, выход из апатии.",
+    "image_path": "data/images/rws/39.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 40,
+    "name_ru": "Пятёрка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 5,
+    "keywords_upright": [
+      "потеря",
+      "горе",
+      "сожаление"
+    ],
+    "keywords_reversed": [
+      "принятие",
+      "движение дальше",
+      "прощение"
+    ],
+    "short_upright": "Горечь потери, но не всё потеряно — обернись.",
+    "short_reversed": "Принятие утраты, готовность двигаться дальше.",
+    "image_path": "data/images/rws/40.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 41,
+    "name_ru": "Шестёрка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 6,
+    "keywords_upright": [
+      "ностальгия",
+      "детство",
+      "воспоминания"
+    ],
+    "keywords_reversed": [
+      "застревание в прошлом",
+      "идеализация",
+      "незрелость"
+    ],
+    "short_upright": "Тёплые воспоминания, связь с прошлым, простота.",
+    "short_reversed": "Застревание в прошлом, идеализация былого.",
+    "image_path": "data/images/rws/41.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 42,
+    "name_ru": "Семёрка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 7,
+    "keywords_upright": [
+      "иллюзии",
+      "мечты",
+      "выбор"
+    ],
+    "keywords_reversed": [
+      "реализм",
+      "фокус",
+      "решимость"
+    ],
+    "short_upright": "Множество фантазий, время выбрать реальное.",
+    "short_reversed": "Возврат к реальности, трезвый взгляд.",
+    "image_path": "data/images/rws/42.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 43,
+    "name_ru": "Восьмёрка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 8,
+    "keywords_upright": [
+      "уход",
+      "разочарование",
+      "поиск глубины"
+    ],
+    "keywords_reversed": [
+      "страх уйти",
+      "цепляние",
+      "избегание"
+    ],
+    "short_upright": "Уход от того, что больше не питает, поиск нового.",
+    "short_reversed": "Страх отпустить, цепляние за привычное.",
+    "image_path": "data/images/rws/43.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 44,
+    "name_ru": "Девятка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 9,
+    "keywords_upright": [
+      "удовлетворение",
+      "исполнение желаний",
+      "комфорт"
+    ],
+    "keywords_reversed": [
+      "жадность",
+      "неудовлетворённость",
+      "самодовольство"
+    ],
+    "short_upright": "Желания сбываются, удовлетворение и благодарность.",
+    "short_reversed": "Жадность, ничего не достаточно.",
+    "image_path": "data/images/rws/44.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 45,
+    "name_ru": "Десятка Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 10,
+    "keywords_upright": [
+      "счастье",
+      "семья",
+      "гармония"
+    ],
+    "keywords_reversed": [
+      "разлад в семье",
+      "нарушенная идиллия",
+      "конфликт"
+    ],
+    "short_upright": "Семейное счастье, эмоциональная полнота.",
+    "short_reversed": "Разлад в семье, нарушенная гармония.",
+    "image_path": "data/images/rws/45.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 46,
+    "name_ru": "Паж Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 11,
+    "keywords_upright": [
+      "мечтательность",
+      "послание",
+      "творчество"
+    ],
+    "keywords_reversed": [
+      "эмоциональная незрелость",
+      "разочарование",
+      "капризы"
+    ],
+    "short_upright": "Творческая идея, послание чувств, мечты.",
+    "short_reversed": "Эмоциональная незрелость, капризность.",
+    "image_path": "data/images/rws/46.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 47,
+    "name_ru": "Рыцарь Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 12,
+    "keywords_upright": [
+      "романтика",
+      "идеализм",
+      "предложение"
+    ],
+    "keywords_reversed": [
+      "ревность",
+      "непостоянство",
+      "уход в фантазии"
+    ],
+    "short_upright": "Романтическое предложение, следование за сердцем.",
+    "short_reversed": "Непостоянство, ревность, иллюзорная любовь.",
+    "image_path": "data/images/rws/47.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 48,
+    "name_ru": "Королева Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 13,
+    "keywords_upright": [
+      "эмпатия",
+      "забота",
+      "интуиция"
+    ],
+    "keywords_reversed": [
+      "зависимость",
+      "эмоциональная нестабильность",
+      "самопожертвование"
+    ],
+    "short_upright": "Глубокая эмпатия, забота, доверие чувствам.",
+    "short_reversed": "Эмоциональная зависимость, потеря себя в других.",
+    "image_path": "data/images/rws/48.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTXng2vOm63hycif16MF3mgOtAAAhcaaxuKRyBJmI2DbmyQnyABAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADFxprG4pHIEl8"
+  },
+  {
+    "id": 49,
+    "name_ru": "Король Кубков",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": 14,
+    "keywords_upright": [
+      "эмоциональная зрелость",
+      "дипломатия",
+      "мудрость"
+    ],
+    "keywords_reversed": [
+      "манипуляция",
+      "холодность",
+      "подавление эмоций"
+    ],
+    "short_upright": "Эмоциональная мудрость, спокойствие, дипломатия.",
+    "short_reversed": "Холодность, манипуляция чувствами.",
+    "image_path": "data/images/rws/49.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 50,
+    "name_ru": "Туз Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 1,
+    "keywords_upright": [
+      "ясность",
+      "прорыв",
+      "истина"
+    ],
+    "keywords_reversed": [
+      "хаос мыслей",
+      "ложь",
+      "заблуждение"
+    ],
+    "short_upright": "Прорыв мысли, ясность, новая истина.",
+    "short_reversed": "Путаница в голове, ложная идея.",
+    "image_path": "data/images/rws/50.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 51,
+    "name_ru": "Двойка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 2,
+    "keywords_upright": [
+      "тупик",
+      "баланс",
+      "выбор"
+    ],
+    "keywords_reversed": [
+      "информационная перегрузка",
+      "ложь себе",
+      "откладывание"
+    ],
+    "short_upright": "Патовая ситуация, нужен взвешенный выбор.",
+    "short_reversed": "Самообман, откладывание решения.",
+    "image_path": "data/images/rws/51.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 52,
+    "name_ru": "Тройка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 3,
+    "keywords_upright": [
+      "боль",
+      "предательство",
+      "горе"
+    ],
+    "keywords_reversed": [
+      "исцеление",
+      "прощение",
+      "выход из боли"
+    ],
+    "short_upright": "Сердечная боль, предательство, горькая правда.",
+    "short_reversed": "Начало исцеления, прощение, отпускание боли.",
+    "image_path": "data/images/rws/52.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 53,
+    "name_ru": "Четвёрка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 4,
+    "keywords_upright": [
+      "отдых",
+      "восстановление",
+      "пауза"
+    ],
+    "keywords_reversed": [
+      "беспокойство",
+      "выгорание",
+      "вынужденный отдых"
+    ],
+    "short_upright": "Необходимая пауза, восстановление сил.",
+    "short_reversed": "Невозможность расслабиться, тревога даже в покое.",
+    "image_path": "data/images/rws/53.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 54,
+    "name_ru": "Пятёрка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 5,
+    "keywords_upright": [
+      "конфликт",
+      "поражение",
+      "унижение"
+    ],
+    "keywords_reversed": [
+      "примирение",
+      "уступка",
+      "конец вражды"
+    ],
+    "short_upright": "Конфликт с потерями, пиррова победа.",
+    "short_reversed": "Время мириться, отпустить гордость.",
+    "image_path": "data/images/rws/54.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 55,
+    "name_ru": "Шестёрка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 6,
+    "keywords_upright": [
+      "переход",
+      "уход",
+      "облегчение"
+    ],
+    "keywords_reversed": [
+      "застревание",
+      "незавершённый переход",
+      "возвращение"
+    ],
+    "short_upright": "Переход к лучшему, оставляешь трудности позади.",
+    "short_reversed": "Невозможность уйти, возвращение к старому.",
+    "image_path": "data/images/rws/55.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 56,
+    "name_ru": "Семёрка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 7,
+    "keywords_upright": [
+      "хитрость",
+      "обман",
+      "стратегия"
+    ],
+    "keywords_reversed": [
+      "раскрытие обмана",
+      "честность",
+      "совесть"
+    ],
+    "short_upright": "Хитрость, обходной путь, стратегия на грани.",
+    "short_reversed": "Обман раскрыт, время быть честным.",
+    "image_path": "data/images/rws/56.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTf5SSffbUIEKyUlIMsLruggScAAp0TaxuKRyhJXjCUixkyfVcBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADnRNrG4pHKEl8"
+  },
+  {
+    "id": 57,
+    "name_ru": "Восьмёрка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 8,
+    "keywords_upright": [
+      "ограничение",
+      "ловушка",
+      "бессилие"
+    ],
+    "keywords_reversed": [
+      "освобождение",
+      "новый взгляд",
+      "самоосвобождение"
+    ],
+    "short_upright": "Чувство ловушки, ограничения, повязка на глазах.",
+    "short_reversed": "Снятие повязки, осознание выхода.",
+    "image_path": "data/images/rws/57.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 58,
+    "name_ru": "Девятка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 9,
+    "keywords_upright": [
+      "тревога",
+      "бессонница",
+      "кошмары"
+    ],
+    "keywords_reversed": [
+      "преодоление тревоги",
+      "надежда",
+      "выход из кризиса"
+    ],
+    "short_upright": "Ночные тревоги, страхи часто преувеличены.",
+    "short_reversed": "Рассвет после тёмной ночи, тревога уходит.",
+    "image_path": "data/images/rws/58.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 59,
+    "name_ru": "Десятка Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 10,
+    "keywords_upright": [
+      "конец",
+      "крах",
+      "дно"
+    ],
+    "keywords_reversed": [
+      "выживание",
+      "новый цикл",
+      "подъём"
+    ],
+    "short_upright": "Болезненный финал, но дно — это опора для подъёма.",
+    "short_reversed": "Худшее позади, медленный подъём.",
+    "image_path": "data/images/rws/59.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 60,
+    "name_ru": "Паж Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 11,
+    "keywords_upright": [
+      "любопытство",
+      "наблюдательность",
+      "новости"
+    ],
+    "keywords_reversed": [
+      "сплетни",
+      "поспешные выводы",
+      "цинизм"
+    ],
+    "short_upright": "Острый ум, новости, жажда информации.",
+    "short_reversed": "Сплетни, поспешные суждения, цинизм.",
+    "image_path": "data/images/rws/60.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 61,
+    "name_ru": "Рыцарь Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 12,
+    "keywords_upright": [
+      "решительность",
+      "напор",
+      "скорость мысли"
+    ],
+    "keywords_reversed": [
+      "грубость",
+      "безрассудство",
+      "конфликтность"
+    ],
+    "short_upright": "Решительный бросок вперёд, острый ум в действии.",
+    "short_reversed": "Грубость, безрассудность, слова ранят.",
+    "image_path": "data/images/rws/61.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 62,
+    "name_ru": "Королева Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 13,
+    "keywords_upright": [
+      "логика",
+      "независимость",
+      "честность"
+    ],
+    "keywords_reversed": [
+      "холодность",
+      "жестокость",
+      "горечь"
+    ],
+    "short_upright": "Ясный ум, честная оценка, независимость.",
+    "short_reversed": "Излишняя холодность, горечь, отчуждение.",
+    "image_path": "data/images/rws/62.jpg",
+    "tg_file_id": "AgACAgIAAxUHaaTXnnEvaflnAeurYUp-U89kUA0AAhkaaxuKRyBJuuctvfKWMNkBAAMCAAN3AAM6BA",
+    "tg_file_unique_id": "AQADGRprG4pHIEl8"
+  },
+  {
+    "id": 63,
+    "name_ru": "Король Мечей",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": 14,
+    "keywords_upright": [
+      "интеллект",
+      "авторитет",
+      "истина"
+    ],
+    "keywords_reversed": [
+      "тирания ума",
+      "манипуляция",
+      "жестокость"
+    ],
+    "short_upright": "Интеллектуальный авторитет, справедливое суждение.",
+    "short_reversed": "Тирания разума, холодная манипуляция.",
+    "image_path": "data/images/rws/63.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 64,
+    "name_ru": "Туз Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 1,
+    "keywords_upright": [
+      "возможность",
+      "материальный старт",
+      "процветание"
+    ],
+    "keywords_reversed": [
+      "упущенный шанс",
+      "нестабильность",
+      "жадность"
+    ],
+    "short_upright": "Новая материальная возможность, зерно для роста.",
+    "short_reversed": "Упущенный шанс, финансовая нестабильность.",
+    "image_path": "data/images/rws/64.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 65,
+    "name_ru": "Двойка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 2,
+    "keywords_upright": [
+      "баланс",
+      "адаптация",
+      "жонглирование"
+    ],
+    "keywords_reversed": [
+      "перегрузка",
+      "дисбаланс",
+      "хаос"
+    ],
+    "short_upright": "Жонглирование задачами, гибкий баланс.",
+    "short_reversed": "Перегрузка, невозможность удержать баланс.",
+    "image_path": "data/images/rws/65.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 66,
+    "name_ru": "Тройка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 3,
+    "keywords_upright": [
+      "мастерство",
+      "командная работа",
+      "качество"
+    ],
+    "keywords_reversed": [
+      "посредственность",
+      "конфликт в команде",
+      "халтура"
+    ],
+    "short_upright": "Командная работа, мастерство, признание качества.",
+    "short_reversed": "Конфликт в коллективе, некачественная работа.",
+    "image_path": "data/images/rws/66.jpg",
+    "tg_file_id": "AgACAgIAAxkDAAIBoWmk39Ia2sQs-VByJecWWIf0K9rOAAKbE2sbikcoSd-Q_MNuWoAtAQADAgADdwADOgQ",
+    "tg_file_unique_id": "AQADmxNrG4pHKEl8"
+  },
+  {
+    "id": 67,
+    "name_ru": "Четвёрка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 4,
+    "keywords_upright": [
+      "стабильность",
+      "контроль",
+      "накопление"
+    ],
+    "keywords_reversed": [
+      "жадность",
+      "страх потери",
+      "скупость"
+    ],
+    "short_upright": "Стабильность, контроль над ресурсами, накопление.",
+    "short_reversed": "Жадность, слишком крепкая хватка.",
+    "image_path": "data/images/rws/67.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 68,
+    "name_ru": "Пятёрка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 5,
+    "keywords_upright": [
+      "нужда",
+      "потеря",
+      "изоляция"
+    ],
+    "keywords_reversed": [
+      "выход из кризиса",
+      "помощь",
+      "восстановление"
+    ],
+    "short_upright": "Трудные времена, чувство нехватки, но помощь рядом.",
+    "short_reversed": "Кризис отступает, помощь приходит.",
+    "image_path": "data/images/rws/68.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 69,
+    "name_ru": "Шестёрка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 6,
+    "keywords_upright": [
+      "щедрость",
+      "обмен",
+      "баланс"
+    ],
+    "keywords_reversed": [
+      "долг",
+      "неравный обмен",
+      "зависимость"
+    ],
+    "short_upright": "Щедрость, справедливый обмен, поддержка.",
+    "short_reversed": "Неравный обмен, зависимость от чужой помощи.",
+    "image_path": "data/images/rws/69.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 70,
+    "name_ru": "Семёрка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 7,
+    "keywords_upright": [
+      "терпение",
+      "оценка",
+      "долгосрочный рост"
+    ],
+    "keywords_reversed": [
+      "нетерпение",
+      "плохие вложения",
+      "разочарование"
+    ],
+    "short_upright": "Терпеливый труд даёт плоды, оцени прогресс.",
+    "short_reversed": "Нетерпение, разочарование в результатах.",
+    "image_path": "data/images/rws/70.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 71,
+    "name_ru": "Восьмёрка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 8,
+    "keywords_upright": [
+      "мастерство",
+      "усердие",
+      "обучение"
+    ],
+    "keywords_reversed": [
+      "перфекционизм",
+      "рутина",
+      "отсутствие роста"
+    ],
+    "short_upright": "Усердный труд, оттачивание навыков, обучение.",
+    "short_reversed": "Рутина без развития, перфекционизм.",
+    "image_path": "data/images/rws/71.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 72,
+    "name_ru": "Девятка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 9,
+    "keywords_upright": [
+      "достаток",
+      "самодостаточность",
+      "комфорт"
+    ],
+    "keywords_reversed": [
+      "зависимость от денег",
+      "одиночество",
+      "перерасход"
+    ],
+    "short_upright": "Заслуженный достаток, самодостаточность и комфорт.",
+    "short_reversed": "Одиночество в роскоши, чрезмерные траты.",
+    "image_path": "data/images/rws/72.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 73,
+    "name_ru": "Десятка Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 10,
+    "keywords_upright": [
+      "наследие",
+      "семья",
+      "долгосрочный успех"
+    ],
+    "keywords_reversed": [
+      "семейные споры",
+      "потеря наследия",
+      "нестабильность"
+    ],
+    "short_upright": "Семейное благополучие, наследие, стабильность поколений.",
+    "short_reversed": "Семейные споры, финансовые разногласия.",
+    "image_path": "data/images/rws/73.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 74,
+    "name_ru": "Паж Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 11,
+    "keywords_upright": [
+      "ученик",
+      "начинание",
+      "практичность"
+    ],
+    "keywords_reversed": [
+      "лень",
+      "упущенная возможность",
+      "незрелость"
+    ],
+    "short_upright": "Начало практического дела, обучение, усердие.",
+    "short_reversed": "Лень, незрелый подход к делу.",
+    "image_path": "data/images/rws/74.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 75,
+    "name_ru": "Рыцарь Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 12,
+    "keywords_upright": [
+      "надёжность",
+      "упорство",
+      "методичность"
+    ],
+    "keywords_reversed": [
+      "застой",
+      "лень",
+      "упрямство"
+    ],
+    "short_upright": "Надёжное продвижение, упорный труд, терпение.",
+    "short_reversed": "Упрямый застой, лень, медлительность.",
+    "image_path": "data/images/rws/75.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 76,
+    "name_ru": "Королева Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 13,
+    "keywords_upright": [
+      "практичность",
+      "уют",
+      "изобилие"
+    ],
+    "keywords_reversed": [
+      "зависимость от материального",
+      "скупость",
+      "самозабвение"
+    ],
+    "short_upright": "Уютный дом, практичная забота, изобилие.",
+    "short_reversed": "Скупость, зацикленность на материальном.",
+    "image_path": "data/images/rws/76.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  },
+  {
+    "id": 77,
+    "name_ru": "Король Пентаклей",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": 14,
+    "keywords_upright": [
+      "богатство",
+      "надёжность",
+      "бизнес"
+    ],
+    "keywords_reversed": [
+      "жадность",
+      "коррупция",
+      "материальная одержимость"
+    ],
+    "short_upright": "Материальный успех, надёжность, деловая хватка.",
+    "short_reversed": "Жадность, коррупция, деньги важнее людей.",
+    "image_path": "data/images/rws/77.jpg",
+    "tg_file_id": null,
+    "tg_file_unique_id": null
+  }
+]

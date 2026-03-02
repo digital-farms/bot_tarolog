@@ -1,0 +1,23 @@
+{
+  "name": "tarot-text-bot",
+  "version": "1.0.0",
+  "description": "Telegram Tarot Text Bot — MVP",
+  "main": "dist/bot.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/bot.js",
+    "dev": "tsx src/bot.ts",
+    "download:rws": "tsx scripts/download_rws.ts",
+    "preload:tg": "tsx scripts/preload_tg_file_ids.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "grammy": "^1.25.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "tsx": "^4.11.0",
+    "@types/node": "^20.12.12"
+  }
+}
