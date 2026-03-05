@@ -1,4 +1,6 @@
 import "dotenv/config";
+import { existsSync } from "fs";
+import { join } from "path";
 import { Bot, InlineKeyboard, Context, InputFile } from "grammy";
 import { Spread, getAllSpreads, getSpreadById } from "./tarot/spreads";
 import { drawCards } from "./tarot/deck";
@@ -7,6 +9,17 @@ import { checkSafety } from "./safety";
 import { getInterpretation } from "./llm";
 import { generateVoice } from "./tts";
 import { sendCardsMediaGroup } from "./tarot/images";
+import {
+  upsertUser, touchUser,
+  saveReading, updateReadingInterpretation,
+  savePayment,
+  getCachedFileId, upsertCardCache,
+  subscribeDailyCard, unsubscribeDailyCard, isDailySubscribed,
+  getTodayDailyCard, revealDailyCard,
+  getFreeReadings, decrementFreeReading,
+} from "./db";
+import { startDailyCron, sendDailyToUser, todayDateStr } from "./daily";
+import { getCardById } from "./tarot/cards";
 
 const token = process.env["TELEGRAM_BOT_TOKEN"];
 if (!token) {
@@ -25,6 +38,9 @@ interface UserState {
   pendingText?: string;
   paid?: boolean;
   lastInterpretation?: string;
+  lastReadingId?: number;
+  dailyCardId?: number;
+  dailyCardReversed?: boolean;
 }
 
 const sessions = new Map<number, UserState>();
@@ -61,7 +77,16 @@ bot.command("start", async (ctx) => {
   state.spreadId = undefined;
   state.pendingText = undefined;
 
-  const startKb = new InlineKeyboard().text("🔮 Начать расклад", "begin_reading");
+  upsertUser(
+    ctx.from!.id,
+    ctx.from?.username,
+    ctx.from?.first_name,
+    ctx.from?.language_code
+  );
+  subscribeDailyCard(ctx.from!.id);
+
+  const startKb = new InlineKeyboard()
+    .text("🔮 Начать расклад", "begin_reading");
 
   await ctx.reply(
     "🌙 <b>Добро пожаловать в пространство Таро.</b>\n\n" +
@@ -90,12 +115,18 @@ bot.callbackQuery("begin_reading", async (ctx) => {
 });
 
 // ── Выбор расклада (inline keyboard) ────────────────────────────────────────
-function spreadKeyboard(): InlineKeyboard {
+function spreadKeyboard(userId: number): InlineKeyboard {
+  const freeLeft = getFreeReadings(userId);
   const kb = new InlineKeyboard();
   for (const s of getAllSpreads()) {
-    const label = s.price > 0
-      ? `✦ ${s.name} (${s.count}) — ⭐ ${s.price}`
-      : `✦ ${s.name} (${s.count})`;
+    let label: string;
+    if (s.id === "whisper" && freeLeft > 0) {
+      label = `✦ ${s.name} (${s.count}) — бесплатно [${freeLeft}]`;
+    } else if (s.price > 0) {
+      label = `✦ ${s.name} (${s.count}) — ⭐ ${s.price}`;
+    } else {
+      label = `✦ ${s.name} (${s.count})`;
+    }
     kb.text(label, `spread:${s.id}`).row();
   }
   kb.text("❓ Чем отличаются расклады?", "spreads_info").row();
@@ -105,7 +136,7 @@ function spreadKeyboard(): InlineKeyboard {
 async function askSpread(ctx: Context) {
   await ctx.reply(
     "🃏 <b>Какой расклад тебя зовёт?</b>",
-    { parse_mode: "HTML", reply_markup: spreadKeyboard() }
+    { parse_mode: "HTML", reply_markup: spreadKeyboard(ctx.from!.id) }
   );
 }
 
@@ -178,6 +209,7 @@ bot.on("message:successful_payment", async (ctx) => {
 
   // ── Оплата озвучки ──
   if (payload === "pay:voice") {
+    savePayment(ctx.from!.id, payment.total_amount, payload, payment.telegram_payment_charge_id);
     state.phase = "idle";
 
     if (!state.lastInterpretation) {
@@ -216,9 +248,82 @@ bot.on("message:successful_payment", async (ctx) => {
     return;
   }
 
+  // ── Оплата карты дня ──
+  if (payload === "pay:daily") {
+    savePayment(ctx.from!.id, payment.total_amount, payload, payment.telegram_payment_charge_id);
+
+    const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
+    if (!today || today.revealed) {
+      state.phase = "idle";
+      await ctx.reply("✨ <i>Карта дня уже раскрыта или не найдена.</i>", { parse_mode: "HTML" });
+      return;
+    }
+
+    revealDailyCard(today.id);
+    const card = getCardById(today.card_id);
+    if (!card) {
+      state.phase = "idle";
+      await ctx.reply("🌑 <i>Что-то пошло не так...</i>", { parse_mode: "HTML" });
+      return;
+    }
+
+    const reversed = today.reversed === 1;
+    const orient = reversed ? "перевёрнутая" : "прямая";
+    const meaning = reversed ? card.short_reversed : card.short_upright;
+    const keywords = reversed ? card.keywords_reversed : card.keywords_upright;
+
+    // Send card photo
+    const cached = getCachedFileId(card.id);
+    const imgPath = join(__dirname, "..", "data", "images", "rws", `${card.id}.jpg`);
+
+    const photoSrc = cached
+      ? cached.tg_file_id
+      : existsSync(imgPath)
+        ? new InputFile(imgPath, `${card.name_ru}.jpg`)
+        : null;
+
+    if (photoSrc) {
+      try {
+        const result = await ctx.api.sendPhoto(ctx.chat!.id, photoSrc, {
+          caption:
+            `🌅 <b>Твоя карта дня: ${card.name_ru}</b> (${orient})\n\n` +
+            `✨ <i>${meaning}</i>\n\n` +
+            `🔑 ${keywords.join(", ")}`,
+          parse_mode: "HTML",
+        });
+        if (!cached && result.photo?.length) {
+          const biggest = result.photo[result.photo.length - 1];
+          upsertCardCache(card.id, biggest.file_id, biggest.file_unique_id);
+        }
+      } catch (imgErr) {
+        console.error("Daily card image error:", imgErr);
+      }
+    }
+
+    // Set up state for auto Шёпот карт with daily card
+    state.spreadId = "whisper";
+    state.dailyCardId = card.id;
+    state.dailyCardReversed = reversed;
+    state.paid = true;
+    state.phase = "awaiting_question";
+
+    await ctx.reply(
+      "🕯 <b>Задай вопрос этой карте</b> — <i>и она раскроет для тебя свой шёпот.</i>",
+      { parse_mode: "HTML" }
+    );
+    return;
+  }
+
   // ── Оплата расклада ──
   const spreadId = payload.replace("pay:", "");
   state.spreadId = spreadId;
+
+  savePayment(
+    ctx.from!.id,
+    payment.total_amount,
+    payload,
+    payment.telegram_payment_charge_id
+  );
 
   state.paid = true;
   await ctx.reply("⭐ <b>Оплата получена.</b> <i>Карты благодарят за доверие...</i>", { parse_mode: "HTML" });
@@ -374,25 +479,69 @@ async function doReading(ctx: Context, state: UserState) {
     return;
   }
 
-  if (spread.price > 0 && !state.paid) {
+  // Free whisper readings for new users
+  const isFreeWhisper = spread.id === "whisper" && !state.paid && getFreeReadings(ctx.from!.id) > 0;
+
+  if (spread.price > 0 && !state.paid && !isFreeWhisper) {
     state.phase = "awaiting_payment";
     await sendStarInvoice(ctx, spread);
+
+    const freeLeft = spread.id === "whisper" ? getFreeReadings(ctx.from!.id) : -1;
+    const freeHint = freeLeft === 0 ? "\n<i>(Бесплатные расклады закончились)</i>" : "";
 
     const cancelKb = new InlineKeyboard()
       .text("❌ Отменить", "cancel_payment");
     await ctx.reply(
-      `⭐ Для этого расклада нужна оплата (<b>${spread.price} Stars</b>). Оплати выше или отмени расклад.`,
+      `⭐ Для этого расклада нужна оплата (<b>${spread.price} Stars</b>). Оплати выше или отмени расклад.${freeHint}`,
       { parse_mode: "HTML", reply_markup: cancelKb }
     );
     return;
   }
 
+  if (isFreeWhisper) {
+    decrementFreeReading(ctx.from!.id);
+    const left = getFreeReadings(ctx.from!.id);
+    if (left > 0) {
+      await ctx.reply(
+        `✨ <i>Бесплатный расклад! Осталось ещё: ${left}</i>`,
+        { parse_mode: "HTML" }
+      );
+    } else {
+      await ctx.reply(
+        "✨ <i>Это твой последний бесплатный расклад «Шёпот карты».</i>",
+        { parse_mode: "HTML" }
+      );
+    }
+  }
+
   state.paid = false;
+  touchUser(ctx.from!.id);
 
   const question = state.question!;
-  const drawn = drawCards(spread.count);
+
+  // Use daily card if set, otherwise draw new cards
+  let drawn;
+  if (state.dailyCardId != null) {
+    const dailyCard = getCardById(state.dailyCardId);
+    if (dailyCard) {
+      drawn = [{ card: dailyCard, reversed: state.dailyCardReversed ?? false }];
+    } else {
+      drawn = drawCards(spread.count);
+    }
+    state.dailyCardId = undefined;
+    state.dailyCardReversed = undefined;
+  } else {
+    drawn = drawCards(spread.count);
+  }
+
   const readingCtx = buildReadingContext(question, spread, drawn);
   const cardsMsg = formatCardsMessage(readingCtx);
+
+  const cardsJson = JSON.stringify(
+    drawn.map((d) => ({ id: d.card.id, name: d.card.name_ru, reversed: d.reversed }))
+  );
+  const readingId = saveReading(ctx.from!.id, spread.id, question, cardsJson, null);
+  state.lastReadingId = readingId;
 
   await ctx.reply(
     `🃏 <b>${spread.name}</b>\n\n${cardsMsg}\n\n` +
@@ -414,6 +563,9 @@ async function doReading(ctx: Context, state: UserState) {
     );
 
     state.lastInterpretation = interpretation;
+    if (state.lastReadingId) {
+      updateReadingInterpretation(state.lastReadingId, interpretation);
+    }
 
     const afterKb = new InlineKeyboard()
       .text("🎙 Озвучить расклад — ⭐ 1", "voice_reading")
@@ -468,12 +620,138 @@ bot.callbackQuery("voice_reading", async (ctx) => {
   );
 });
 
+// ── Карта дня ───────────────────────────────────────────────────────────────
+bot.command("daily", async (ctx) => {
+  upsertUser(ctx.from!.id, ctx.from?.username, ctx.from?.first_name, ctx.from?.language_code);
+
+  if (isDailySubscribed(ctx.from!.id)) {
+    const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
+    if (today && !today.revealed) {
+      const kb = new InlineKeyboard()
+        .text("🔮 Раскрыть карту дня — ⭐ 1", "reveal_daily")
+        .row()
+        .text("🔕 Отписаться от карты дня", "unsub_daily");
+      await ctx.reply(
+        "🌅 <i>Твоя карта дня уже ждёт!</i> Нажми кнопку, чтобы раскрыть.",
+        { parse_mode: "HTML", reply_markup: kb }
+      );
+      return;
+    }
+    if (today && today.revealed) {
+      await ctx.reply(
+        "✨ <i>Ты уже раскрыл(а) карту дня сегодня.</i> Приходи завтра за новой!",
+        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+      );
+      return;
+    }
+    // Subscribed but no card for today yet — send it now
+    await sendDailyToUser(bot, ctx.from!.id);
+    return;
+  }
+
+  subscribeDailyCard(ctx.from!.id);
+  await ctx.reply(
+    "🌅 <b>Ты подписан(а) на карту дня!</b>\n\n" +
+      "Каждое утро тебя будет ждать таинственная карта. " +
+      "<i>Раскрой её — и узнай послание дня.</i> ✨",
+    { parse_mode: "HTML" }
+  );
+  await sendDailyToUser(bot, ctx.from!.id);
+});
+
+bot.callbackQuery("toggle_daily", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  upsertUser(ctx.from!.id, ctx.from?.username, ctx.from?.first_name, ctx.from?.language_code);
+
+  if (isDailySubscribed(ctx.from!.id)) {
+    const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
+    if (today && !today.revealed) {
+      const kb = new InlineKeyboard()
+        .text("🔮 Раскрыть карту дня — ⭐ 1", "reveal_daily")
+        .row()
+        .text("🔕 Отписаться от карты дня", "unsub_daily");
+      await ctx.reply(
+        "🌅 <i>Твоя карта дня уже ждёт!</i>",
+        { parse_mode: "HTML", reply_markup: kb }
+      );
+      return;
+    }
+    if (today && today.revealed) {
+      await ctx.reply(
+        "✨ <i>Ты уже раскрыл(а) карту дня.</i> Завтра будет новая!",
+        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+      );
+      return;
+    }
+    await sendDailyToUser(bot, ctx.from!.id);
+    return;
+  }
+
+  subscribeDailyCard(ctx.from!.id);
+  await ctx.reply(
+    "🌅 <b>Ты подписан(а) на карту дня!</b>\n" +
+      "<i>Каждое утро тебя будет ждать таинственная карта.</i> ✨",
+    { parse_mode: "HTML" }
+  );
+  await sendDailyToUser(bot, ctx.from!.id);
+});
+
+bot.callbackQuery("reveal_daily", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const state = getState(ctx.chat!.id);
+
+  const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
+  if (!today) {
+    await ctx.reply("🌑 <i>Карта дня ещё не выбрана.</i> Напиши /daily", { parse_mode: "HTML" });
+    return;
+  }
+  if (today.revealed) {
+    const card = getCardById(today.card_id);
+    if (card) {
+      await ctx.reply(
+        `✨ Ты уже раскрыл(а) карту дня: <b>${card.name_ru}</b>`,
+        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+      );
+    }
+    return;
+  }
+
+  // Send invoice for reveal
+  state.phase = "awaiting_payment";
+  await ctx.api.sendInvoice(
+    ctx.chat!.id,
+    "🔮 Раскрыть карту дня",
+    "Узнай, какую карту выбрала для тебя Вселенная сегодня",
+    "pay:daily",
+    "XTR",
+    [{ label: "Карта дня", amount: 1 }],
+    { provider_token: "" }
+  );
+
+  const cancelKb = new InlineKeyboard().text("❌ Отменить", "cancel_payment");
+  await ctx.reply(
+    "⭐ Оплати <b>1 Star</b> — и карта раскроется.",
+    { parse_mode: "HTML", reply_markup: cancelKb }
+  );
+});
+
+bot.callbackQuery("unsub_daily", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  unsubscribeDailyCard(ctx.from!.id);
+  await ctx.reply(
+    "🔕 <i>Ты отписан(а) от карты дня.</i> Чтобы подписаться снова — напиши /daily",
+    { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+  );
+});
+
 // ── Обработка ошибок ────────────────────────────────────────────────────────
 bot.catch((err) => {
   console.error("Bot error:", err.message ?? err);
 });
 
 // ── Запуск ──────────────────────────────────────────────────────────────────
+startDailyCron(bot);
+
 bot.start({
   onStart: () => console.log("Tarot bot started!"),
 });

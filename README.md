@@ -31,6 +31,7 @@ cp .env.example .env
 TELEGRAM_BOT_TOKEN=ваш_токен_от_BotFather
 OPENROUTER_API_KEY=ваш_ключ_openrouter
 OPENROUTER_MODEL=openai/gpt-4o-mini
+OPENAI_TTS_API_KEY=ваш_ключ_openai_tts
 PRELOAD_CHAT_ID=ваш_chat_id        # опционально, для preload file_id
 ```
 

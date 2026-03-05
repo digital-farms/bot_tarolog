@@ -2,8 +2,9 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { InputFile, InputMediaBuilder } from "grammy";
 import type { Api } from "grammy";
-import { Card, updateCardFileId } from "./cards";
+import { Card } from "./cards";
 import type { DrawnCard } from "./deck";
+import { getCachedFileId, upsertCardCache } from "../db";
 
 const PROJECT_ROOT = join(__dirname, "..", "..");
 
@@ -16,10 +17,15 @@ export function hasLocalImage(card: Card): boolean {
 }
 
 function getPhotoSource(card: Card): string | InputFile | null {
-  if (card.tg_file_id) return card.tg_file_id;
+  const cached = getCachedFileId(card.id);
+  if (cached) return cached.tg_file_id;
   const p = getImagePath(card);
   if (!existsSync(p)) return null;
   return new InputFile(p, `${card.name_ru}.jpg`);
+}
+
+function isAlreadyCached(cardId: number): boolean {
+  return getCachedFileId(cardId) !== null;
 }
 
 export async function sendCardsMediaGroup(
@@ -40,9 +46,9 @@ export async function sendCardsMediaGroup(
     const result = await api.sendPhoto(chatId, src, {
       caption: `🃏 ${d.card.name_ru} (${orient})`,
     });
-    if (!d.card.tg_file_id && result.photo?.length) {
+    if (!isAlreadyCached(d.card.id) && result.photo?.length) {
       const biggest = result.photo[result.photo.length - 1];
-      updateCardFileId(d.card.id, biggest.file_id, biggest.file_unique_id);
+      upsertCardCache(d.card.id, biggest.file_id, biggest.file_unique_id);
     }
     return;
   }
@@ -59,12 +65,12 @@ export async function sendCardsMediaGroup(
 
   for (let i = 0; i < results.length; i++) {
     const card = validDrawn[i]?.card;
-    if (!card || card.tg_file_id) continue;
+    if (!card || isAlreadyCached(card.id)) continue;
     const msg = results[i] as any;
     const photo = msg.photo;
     if (photo?.length) {
       const biggest = photo[photo.length - 1];
-      updateCardFileId(card.id, biggest.file_id, biggest.file_unique_id);
+      upsertCardCache(card.id, biggest.file_id, biggest.file_unique_id);
     }
   }
 }

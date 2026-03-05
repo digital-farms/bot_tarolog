@@ -2,7 +2,8 @@ import "dotenv/config";
 import { Bot, InputFile } from "grammy";
 import { existsSync } from "fs";
 import { join } from "path";
-import { getAllCards, saveCards } from "../src/tarot/cards";
+import { getAllCards } from "../src/tarot/cards";
+import { getCachedFileId, upsertCardCache } from "../src/db";
 
 const token = process.env["TELEGRAM_BOT_TOKEN"];
 if (!token) {
@@ -30,7 +31,7 @@ async function main() {
   console.log(`📨 Target chat: ${chatId}\n`);
 
   for (const card of cards) {
-    if (card.tg_file_id) {
+    if (getCachedFileId(card.id)) {
       skipped++;
       continue;
     }
@@ -45,21 +46,21 @@ async function main() {
     process.stdout.write(`📤 [${card.id}] ${card.name_ru} ... `);
 
     try {
-      const result = await bot.api.sendDocument(
+      const result = await bot.api.sendPhoto(
         chatId!,
         new InputFile(imagePath, `${card.name_ru}.jpg`),
         { caption: `🃏 ${card.name_ru} (id: ${card.id})` }
       );
 
-      const doc = result.document;
-      if (doc) {
-        card.tg_file_id = doc.file_id;
-        card.tg_file_unique_id = doc.file_unique_id;
+      const photo = result.photo;
+      if (photo?.length) {
+        const biggest = photo[photo.length - 1];
+        upsertCardCache(card.id, biggest.file_id, biggest.file_unique_id);
         sent++;
         console.log("✅");
       } else {
         errors++;
-        console.log("❌ no document in response");
+        console.log("❌ no photo in response");
       }
     } catch (err: any) {
       errors++;
@@ -70,7 +71,6 @@ async function main() {
     await new Promise((r) => setTimeout(r, 500));
   }
 
-  saveCards(cards);
   console.log(
     `\n📊 Done: ${sent} sent, ${skipped} already cached, ${errors} errors`
   );
