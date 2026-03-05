@@ -19,6 +19,7 @@ import {
   getFreeReadings, decrementFreeReading,
 } from "./db";
 import { startDailyCron, sendDailyToUser, todayDateStr } from "./daily";
+import { startAdmin } from "./admin";
 import { getCardById } from "./tarot/cards";
 
 const token = process.env["TELEGRAM_BOT_TOKEN"];
@@ -751,6 +752,7 @@ bot.catch((err) => {
 
 // ── Запуск ──────────────────────────────────────────────────────────────────
 startDailyCron(bot);
+startAdmin();
 
 bot.start({
   onStart: () => console.log("Tarot bot started!"),
