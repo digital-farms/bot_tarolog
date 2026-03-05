@@ -13,7 +13,7 @@ import {
 const RUBASHKA_PATH = join(__dirname, "..", "data", "images", "rubashka__obratnaya_storona_igralnoy_karti.jpg");
 
 function todayDateStr(): string {
-  return new Date().toISOString().slice(0, 10);
+  return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
 }
 
 function pickRandomCard(): { cardId: number; reversed: boolean } {
@@ -25,11 +25,15 @@ function pickRandomCard(): { cardId: number; reversed: boolean } {
 async function sendDailyToUser(bot: Bot, userTgId: number): Promise<void> {
   const date = todayDateStr();
 
-  const existing = getTodayDailyCard(userTgId, date);
-  if (existing) return;
+  let existing = getTodayDailyCard(userTgId, date);
+  if (!existing) {
+    const { cardId, reversed } = pickRandomCard();
+    saveDailyCard(userTgId, cardId, reversed, date);
+    existing = getTodayDailyCard(userTgId, date);
+  }
 
-  const { cardId, reversed } = pickRandomCard();
-  saveDailyCard(userTgId, cardId, reversed, date);
+  // Already revealed = already sent successfully before
+  if (existing?.revealed) return;
 
   const { InlineKeyboard } = await import("grammy");
 
@@ -52,6 +56,7 @@ async function sendDailyToUser(bot: Bot, userTgId: number): Promise<void> {
       parse_mode: "HTML",
       reply_markup: kb,
     });
+    console.log(`✅ Daily card sent to ${userTgId}`);
   } catch (err: any) {
     if (err?.error_code === 403) {
       const { unsubscribeDailyCard } = await import("./db");

@@ -42,6 +42,7 @@ interface UserState {
   lastReadingId?: number;
   dailyCardId?: number;
   dailyCardReversed?: boolean;
+  lastPaymentChargeId?: string;
 }
 
 const sessions = new Map<number, UserState>();
@@ -211,6 +212,7 @@ bot.on("message:successful_payment", async (ctx) => {
   // ── Оплата озвучки ──
   if (payload === "pay:voice") {
     savePayment(ctx.from!.id, payment.total_amount, payload, payment.telegram_payment_charge_id);
+    state.lastPaymentChargeId = payment.telegram_payment_charge_id;
     state.phase = "idle";
 
     if (!state.lastInterpretation) {
@@ -235,15 +237,44 @@ bot.on("message:successful_payment", async (ctx) => {
       });
     } catch (err: any) {
       console.error("TTS error:", err);
-      const desc = err?.description ?? "";
+      const desc = err?.description ?? err?.message ?? "";
       if (desc.includes("VOICE_MESSAGES_FORBIDDEN")) {
-        await ctx.reply(
-          "🔇 Не могу отправить голосовое — у тебя запрещён приём голосовых сообщений в настройках Telegram. Разреши их и попробуй снова.",
-        );
+        // Refund Stars — user can't receive voice messages
+        try {
+          await ctx.api.raw.refundStarPayment({
+            user_id: ctx.from!.id,
+            telegram_payment_charge_id: payment.telegram_payment_charge_id,
+          });
+          await ctx.reply(
+            "🔇 <b>Не удалось отправить голосовое</b> — у тебя запрещён приём голосовых сообщений.\n\n" +
+            "⭐ <b>Звёзды возвращены.</b>\n\n" +
+            "Чтобы получить озвучку:\n" +
+            "<i>Настройки Telegram → Конфиденциальность → Голосовые сообщения → Разрешить для всех</i>",
+            { parse_mode: "HTML" }
+          );
+        } catch (refundErr) {
+          console.error("Refund error:", refundErr);
+          await ctx.reply(
+            "🔇 Не удалось отправить голосовое — у тебя запрещён приём голосовых. Напиши @support для возврата звёзд.",
+          );
+        }
       } else {
-        await ctx.reply(
-          "🌑 Не удалось озвучить расклад... Попробуй чуть позже.",
-        );
+        // Other TTS/send error — also refund
+        try {
+          await ctx.api.raw.refundStarPayment({
+            user_id: ctx.from!.id,
+            telegram_payment_charge_id: payment.telegram_payment_charge_id,
+          });
+          await ctx.reply(
+            "🌑 <i>Не удалось озвучить расклад...</i> ⭐ Звёзды возвращены. Попробуй чуть позже.",
+            { parse_mode: "HTML" }
+          );
+        } catch (refundErr) {
+          console.error("Refund error:", refundErr);
+          await ctx.reply(
+            "🌑 Не удалось озвучить расклад... Попробуй чуть позже.",
+          );
+        }
       }
     }
     return;
@@ -546,7 +577,7 @@ async function doReading(ctx: Context, state: UserState) {
 
   await ctx.reply(
     `🃏 <b>${spread.name}</b>\n\n${cardsMsg}\n\n` +
-      "<i>Карты раскрываются, ожидай... Позволь им рассказать свою историю</i> 🌙",
+      "<i>Карты раскрываются, ожидай минутку... Позволь им рассказать свою историю</i> 🌙",
     { parse_mode: "HTML" }
   );
 
@@ -616,7 +647,8 @@ bot.callbackQuery("voice_reading", async (ctx) => {
 
   const cancelKb = new InlineKeyboard().text("❌ Отменить", "cancel_payment");
   await ctx.reply(
-    "⭐ Оплати <b>1 Star</b> выше — и я озвучу расклад приятным голосом.",
+    "⭐ Оплати <b>1 Star</b> выше — и я озвучу расклад приятным голосом.\n\n" +
+    "💡 <i>Убедись, что в настройках Telegram разрешены голосовые сообщения от всех, иначе озвучка не дойдёт.</i>",
     { parse_mode: "HTML", reply_markup: cancelKb }
   );
 });

@@ -4,9 +4,20 @@ import { getDb, subscribeDailyCard, unsubscribeDailyCard, isDailySubscribed } fr
 
 const ADMIN_KEY = process.env["ADMIN_KEY"] || "changeme";
 const ADMIN_PORT = parseInt(process.env["ADMIN_PORT"] || "3737", 10);
+const ADMIN_PATH = process.env["ADMIN_PATH"] || "/admin";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
+
+// ── Security headers ────────────────────────────────────────────────────────
+app.use((_req, res, next) => {
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("Content-Security-Policy", "default-src 'self'; style-src 'unsafe-inline'; script-src 'none'");
+  next();
+});
 
 // ── Cookie-based session ────────────────────────────────────────────────────
 const SESSION_TOKEN = crypto.randomBytes(32).toString("hex");
@@ -22,41 +33,85 @@ function parseCookies(header: string | undefined): Record<string, string> {
   return map;
 }
 
-// ── Login page ──────────────────────────────────────────────────────────────
-app.get("/login", (_req, res) => {
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
+
+// ── Brute-force protection ──────────────────────────────────────────────────
+const loginAttempts = new Map<string, { count: number; blockedUntil: number }>();
+const MAX_ATTEMPTS = 5;
+const BLOCK_DURATION = 15 * 60 * 1000; // 15 min
+
+function getClientIp(req: express.Request): string {
+  return (req.headers["x-forwarded-for"] as string || req.socket.remoteAddress || "unknown").split(",")[0].trim();
+}
+
+function isBlocked(ip: string): boolean {
+  const entry = loginAttempts.get(ip);
+  if (!entry) return false;
+  if (entry.blockedUntil > Date.now()) return true;
+  if (entry.blockedUntil > 0) { loginAttempts.delete(ip); }
+  return false;
+}
+
+function recordFailedLogin(ip: string): void {
+  // Cap map size to prevent memory exhaustion from DDoS
+  if (loginAttempts.size > 10000) {
+    const oldest = loginAttempts.keys().next().value;
+    if (oldest) loginAttempts.delete(oldest);
+  }
+  const entry = loginAttempts.get(ip) || { count: 0, blockedUntil: 0 };
+  entry.count++;
+  if (entry.count >= MAX_ATTEMPTS) {
+    entry.blockedUntil = Date.now() + BLOCK_DURATION;
+    entry.count = 0;
+  }
+  loginAttempts.set(ip, entry);
+}
+
+function clearFailedLogins(ip: string): void {
+  loginAttempts.delete(ip);
+}
+
+// ── Router (all routes under ADMIN_PATH) ────────────────────────────────────
+const router = express.Router();
+
+router.get("/login", (_req, res) => {
   res.send(loginPage());
 });
 
-app.post("/login", (req, res) => {
-  if (req.body.key === ADMIN_KEY) {
-    res.setHeader("Set-Cookie", `${COOKIE_NAME}=${SESSION_TOKEN}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`);
-    res.redirect("/");
+router.post("/login", (req, res) => {
+  const ip = getClientIp(req);
+  if (isBlocked(ip)) {
+    res.send(loginPage("Слишком много попыток. Подожди 15 минут."));
+    return;
+  }
+  if (req.body.key && safeEqual(req.body.key, ADMIN_KEY)) {
+    clearFailedLogins(ip);
+    res.setHeader("Set-Cookie", `${COOKIE_NAME}=${SESSION_TOKEN}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`);
+    res.redirect(`${ADMIN_PATH}/`);
   } else {
+    recordFailedLogin(ip);
     res.send(loginPage("Неверный ключ"));
   }
 });
 
-app.get("/logout", (_req, res) => {
+router.get("/logout", (_req, res) => {
   res.setHeader("Set-Cookie", `${COOKIE_NAME}=; Path=/; HttpOnly; Max-Age=0`);
-  res.redirect("/login");
+  res.redirect(`${ADMIN_PATH}/login`);
 });
 
 // ── Auth middleware ──────────────────────────────────────────────────────────
-app.use((req: express.Request, res: express.Response, next: express.NextFunction): void => {
+router.use((req: express.Request, res: express.Response, next: express.NextFunction): void => {
   const cookies = parseCookies(req.headers.cookie);
   if (cookies[COOKIE_NAME] === SESSION_TOKEN) { next(); return; }
-  // Also allow ?key= for first login convenience
-  if (req.query.key === ADMIN_KEY) {
-    res.setHeader("Set-Cookie", `${COOKIE_NAME}=${SESSION_TOKEN}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`);
-    res.redirect(req.path);
-    return;
-  }
-  res.redirect("/login");
+  res.redirect(`${ADMIN_PATH}/login`);
 });
 
 // ── Layout ──────────────────────────────────────────────────────────────────
 function loginPage(error?: string): string {
-  const errHtml = error ? `<div style="color:#cf6f6f;margin-bottom:12px">${error}</div>` : "";
+  const errHtml = error ? `<div style="color:#cf6f6f;margin-bottom:12px">${esc(error)}</div>` : "";
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🔒 Вход — Таро Админ</title>
 <style>
@@ -72,7 +127,7 @@ function loginPage(error?: string): string {
 <div class="login">
   <h1>🔮 Таро Админ</h1>
   ${errHtml}
-  <form method="post" action="/login">
+  <form method="post" action="${ADMIN_PATH}/login">
     <input name="key" type="password" placeholder="Ключ доступа" autofocus>
     <button type="submit">Войти</button>
   </form>
@@ -111,9 +166,9 @@ function page(title: string, body: string): string {
 </style>
 </head><body>
 <div class="nav">
-  <a href="/">📊 Статистика</a>
-  <a href="/users">👥 Пользователи</a>
-  <span class="nav-right"><a href="/logout">🚪 Выйти</a></span>
+  <a href="${ADMIN_PATH}/">📊 Статистика</a>
+  <a href="${ADMIN_PATH}/users">👥 Пользователи</a>
+  <span class="nav-right"><a href="${ADMIN_PATH}/logout">🚪 Выйти</a></span>
 </div>
 <h1>${title}</h1>
 ${body}
@@ -121,7 +176,7 @@ ${body}
 }
 
 // ── Dashboard ───────────────────────────────────────────────────────────────
-app.get("/", (_req, res) => {
+router.get("/", (_req, res) => {
   const db = getDb();
 
   const totalUsers = (db.prepare("SELECT COUNT(*) as c FROM users").get() as any).c;
@@ -145,7 +200,7 @@ app.get("/", (_req, res) => {
 });
 
 // ── Users list ──────────────────────────────────────────────────────────────
-app.get("/users", (req, res) => {
+router.get("/users", (req, res) => {
   const db = getDb();
   const search = (req.query.q as string || "").trim();
 
@@ -169,7 +224,7 @@ app.get("/users", (req, res) => {
 
   const rows = users.map((u: any) =>
     `<tr>
-      <td><a href="/user/${u.tg_id}">${u.tg_id}</a></td>
+      <td><a href="${ADMIN_PATH}/user/${u.tg_id}">${u.tg_id}</a></td>
       <td>${esc(u.first_name || "—")}</td>
       <td>${esc(u.username || "—")}</td>
       <td>${u.free_readings_left}</td>
@@ -187,7 +242,7 @@ app.get("/users", (req, res) => {
     ${addMsgHtml}
     <div class="card">
       <h2>➕ Добавить пользователя</h2>
-      <form method="post" action="/users/add" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px">
+      <form method="post" action="${ADMIN_PATH}/users/add" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px">
         <label>TG ID: <input name="tg_id" type="number" required style="width:140px" placeholder="123456789"></label>
         <label>Free: <input name="free" type="number" value="3" min="0" style="width:60px"></label>
         <label>Daily:
@@ -215,16 +270,16 @@ app.get("/users", (req, res) => {
 });
 
 // ── Add user (POST) ─────────────────────────────────────────────────────────
-app.post("/users/add", (req, res) => {
+router.post("/users/add", (req, res) => {
   const tgId = parseInt(req.body.tg_id, 10);
   const freeReadings = parseInt(req.body.free, 10) || 3;
   const dailyActive = req.body.daily === "1";
 
-  if (isNaN(tgId)) { res.redirect("/users?add=err"); return; }
+  if (isNaN(tgId)) { res.redirect(`${ADMIN_PATH}/users?add=err`); return; }
 
   const existing = getDb().prepare("SELECT tg_id FROM users WHERE tg_id = ?").get(tgId);
   if (existing) {
-    res.redirect(`/user/${tgId}?msg=ok`);
+    res.redirect(`${ADMIN_PATH}/user/${tgId}?msg=ok`);
     return;
   }
 
@@ -234,11 +289,11 @@ app.post("/users/add", (req, res) => {
 
   if (dailyActive) subscribeDailyCard(tgId);
 
-  res.redirect("/users?add=ok");
+  res.redirect(`${ADMIN_PATH}/users?add=ok`);
 });
 
 // ── User detail ─────────────────────────────────────────────────────────────
-app.get("/user/:id", (req, res) => {
+router.get("/user/:id", (req, res) => {
   const db = getDb();
   const tgId = parseInt(req.params.id, 10);
   const msg = req.query.msg as string || "";
@@ -265,13 +320,13 @@ app.get("/user/:id", (req, res) => {
   res.send(page(`👤 ${esc(user.first_name || user.username || String(tgId))}`, `
     ${msgHtml}
     <div class="card">
-      <p><b>TG ID:</b> ${user.tg_id} &nbsp; <b>Username:</b> ${esc(user.username || "—")} &nbsp; <b>Язык:</b> ${user.language}</p>
+      <p><b>TG ID:</b> ${user.tg_id} &nbsp; <b>Username:</b> ${esc(user.username || "—")} &nbsp; <b>Язык:</b> ${esc(user.language || "—")}</p>
       <p><b>Зарегистрирован:</b> ${user.created_at} &nbsp; <b>Последняя активность:</b> ${timeAgo(user.last_active_at)}</p>
     </div>
 
     <div class="card">
       <h2>⚙️ Управление</h2>
-      <form method="post" action="/user/${tgId}/update" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px">
+      <form method="post" action="${ADMIN_PATH}/user/${tgId}/update" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px">
         <label>Бесплатных раскладов:
           <input name="free" type="number" value="${user.free_readings_left}" min="0" style="width:70px">
         </label>
@@ -300,7 +355,7 @@ app.get("/user/:id", (req, res) => {
 });
 
 // ── User update (POST) ─────────────────────────────────────────────────────
-app.post("/user/:id/update", (req, res) => {
+router.post("/user/:id/update", (req, res) => {
   const tgId = parseInt(req.params.id, 10);
   const freeReadings = parseInt(req.body.free, 10);
   const dailyActive = req.body.daily === "1";
@@ -315,7 +370,7 @@ app.post("/user/:id/update", (req, res) => {
     unsubscribeDailyCard(tgId);
   }
 
-  res.redirect(`/user/${tgId}?msg=ok`);
+  res.redirect(`${ADMIN_PATH}/user/${tgId}?msg=ok`);
 });
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -335,9 +390,17 @@ function timeAgo(dateStr: string): string {
   return `${days}д назад`;
 }
 
-// ── Start ───────────────────────────────────────────────────────────────────
+// ── Mount & Start ───────────────────────────────────────────────────────────
+app.use(ADMIN_PATH, router);
+
+// Return 404 on all unknown paths (don't leak ADMIN_PATH)
+app.use((_req, res) => { res.status(404).end(); });
+
 export function startAdmin(): void {
-  app.listen(ADMIN_PORT, "127.0.0.1", () => {
-    console.log(`🛡 Admin panel: http://localhost:${ADMIN_PORT}`);
+  if (ADMIN_KEY === "changeme") {
+    console.warn("⚠️  ADMIN_KEY is default 'changeme' — set a strong key in .env before deploying!");
+  }
+  app.listen(ADMIN_PORT, "0.0.0.0", () => {
+    console.log(`🛡 Admin panel: http://localhost:${ADMIN_PORT}${ADMIN_PATH}`);
   });
 }

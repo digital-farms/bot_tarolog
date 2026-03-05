@@ -3,11 +3,14 @@ import "dotenv/config";
 const OPENAI_TTS_API_KEY = process.env["OPENAI_TTS_API_KEY"];
 
 if (!OPENAI_TTS_API_KEY) {
-  console.error("OPENAI_TTS_API_KEY не задан в .env");
-  process.exit(1);
+  console.warn("⚠️  OPENAI_TTS_API_KEY не задан в .env — озвучка раскладов будет недоступна");
 }
 
 export async function generateVoice(text: string): Promise<Buffer> {
+  if (!OPENAI_TTS_API_KEY) {
+    throw new Error("OPENAI_TTS_API_KEY not configured");
+  }
+
   // Убираем HTML-теги — TTS читает чистый текст
   const clean = text.replace(/<[^>]+>/g, "");
 
