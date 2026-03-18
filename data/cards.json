@@ -19,7 +19,9 @@
     "short_reversed": "Необдуманный шаг, страх неизвестности, хаос.",
     "image_path": "data/images/rws/0.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWQbYW-uwABHIG6BaF4jGAffbaSAALZGGsbikcoSbViqBQ2R2n5AQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQAD2RhrG4pHKEl8"
+    "tg_file_unique_id": "AQAD2RhrG4pHKEl8",
+    "name_en": "The Fool",
+    "name_uk": "Блазень"
   },
   {
     "id": 1,
@@ -41,7 +43,9 @@
     "short_reversed": "Обман или самообман, разбросанность, нехватка фокуса.",
     "image_path": "data/images/rws/1.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICFGmmvUH_byS9rE2xn0pMGNZ0Lql7AAIEHmsbC005SZUh8WHQ5fxpAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADBB5rGwtNOUl8"
+    "tg_file_unique_id": "AQADBB5rGwtNOUl8",
+    "name_en": "The Magician",
+    "name_uk": "Маг"
   },
   {
     "id": 2,
@@ -63,7 +67,9 @@
     "short_reversed": "Отрыв от внутреннего голоса, подавленная интуиция.",
     "image_path": "data/images/rws/2.jpg",
     "tg_file_id": "AgACAgIAAxUHaacVNpWVLtOV03vanQL58DHvlW8AAoESaxvjtDhJ81vQfCS5FY8BAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADgRJrG-O0OEl8"
+    "tg_file_unique_id": "AQADgRJrG-O0OEl8",
+    "name_en": "The High Priestess",
+    "name_uk": "Верховна Жриця"
   },
   {
     "id": 3,
@@ -85,7 +91,9 @@
     "short_reversed": "Нехватка заботы, творческий застой, зависимость.",
     "image_path": "data/images/rws/3.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "The Empress",
+    "name_uk": "Імператриця"
   },
   {
     "id": 4,
@@ -107,7 +115,9 @@
     "short_reversed": "Чрезмерный контроль, жёсткость, слабость власти.",
     "image_path": "data/images/rws/4.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTf5cDS3Q-8QeC4DoKv-WEyawsAAp4TaxuKRyhJY00aKqUFN1gBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADnhNrG4pHKEl8"
+    "tg_file_unique_id": "AQADnhNrG4pHKEl8",
+    "name_en": "The Emperor",
+    "name_uk": "Імператор"
   },
   {
     "id": 5,
@@ -129,7 +139,9 @@
     "short_reversed": "Слепое следование правилам или бунт против них.",
     "image_path": "data/images/rws/5.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "The Hierophant",
+    "name_uk": "Ієрофант"
   },
   {
     "id": 6,
@@ -151,7 +163,9 @@
     "short_reversed": "Разлад, сомнения в выборе, внутренний конфликт.",
     "image_path": "data/images/rws/6.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "The Lovers",
+    "name_uk": "Закохані"
   },
   {
     "id": 7,
@@ -173,7 +187,9 @@
     "short_reversed": "Потеря курса, борьба без цели, застревание.",
     "image_path": "data/images/rws/7.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTVtSCH_FTUn4lf26T9MoTb5moAAvsZaxuKRyBJqawv3GOliRQBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD-xlrG4pHIEl8"
+    "tg_file_unique_id": "AQAD-xlrG4pHIEl8",
+    "name_en": "The Chariot",
+    "name_uk": "Колісниця"
   },
   {
     "id": 8,
@@ -195,7 +211,9 @@
     "short_reversed": "Неуверенность, страх, потеря самообладания.",
     "image_path": "data/images/rws/8.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTVtRp-xseT2rdcbo91GTBLsa0AAvoZaxuKRyBJgjUdSkkQrcoBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD-hlrG4pHIEl8"
+    "tg_file_unique_id": "AQAD-hlrG4pHIEl8",
+    "name_en": "Strength",
+    "name_uk": "Сила"
   },
   {
     "id": 9,
@@ -217,7 +235,9 @@
     "short_reversed": "Болезненная изоляция, избегание людей.",
     "image_path": "data/images/rws/9.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "The Hermit",
+    "name_uk": "Відлюдник"
   },
   {
     "id": 10,
@@ -239,7 +259,9 @@
     "short_reversed": "Застой, нежелание принять неизбежные перемены.",
     "image_path": "data/images/rws/10.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIC22mm_PgQMsdgUJOg2R6d6PBFHA2BAAIsGWsbYm84SQaLPVIIt46_AQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADLBlrG2JvOEl8"
+    "tg_file_unique_id": "AQADLBlrG2JvOEl8",
+    "name_en": "Wheel of Fortune",
+    "name_uk": "Колесо Фортуни"
   },
   {
     "id": 11,
@@ -261,7 +283,9 @@
     "short_reversed": "Несправедливое решение, избегание ответственности.",
     "image_path": "data/images/rws/11.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Justice",
+    "name_uk": "Справедливість"
   },
   {
     "id": 12,
@@ -283,7 +307,9 @@
     "short_reversed": "Бессмысленное ожидание, нежелание менять угол зрения.",
     "image_path": "data/images/rws/12.jpg",
     "tg_file_id": "AgACAgIAAxUHaacBSeIwyzZ7DO35STPHyyD2kLoAAkQYaxvpiThJqszKprkKb7EBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADRBhrG-mJOEl8"
+    "tg_file_unique_id": "AQADRBhrG-mJOEl8",
+    "name_en": "The Hanged Man",
+    "name_uk": "Повішений"
   },
   {
     "id": 13,
@@ -305,7 +331,9 @@
     "short_reversed": "Цепляние за прошлое, страх отпустить.",
     "image_path": "data/images/rws/13.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Death",
+    "name_uk": "Смерть"
   },
   {
     "id": 14,
@@ -327,7 +355,9 @@
     "short_reversed": "Крайности, нарушенный баланс, поспешность.",
     "image_path": "data/images/rws/14.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Temperance",
+    "name_uk": "Поміркованість"
   },
   {
     "id": 15,
@@ -349,7 +379,9 @@
     "short_reversed": "Осознание зависимости, шанс освободиться.",
     "image_path": "data/images/rws/15.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "The Devil",
+    "name_uk": "Диявол"
   },
   {
     "id": 16,
@@ -371,7 +403,9 @@
     "short_reversed": "Оттягивание неизбежного разрушения, страх.",
     "image_path": "data/images/rws/16.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTXnoB9PkeroWOGOlV_c6t7dNAAAhgaaxuKRyBJFSz852Xc70sBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADGBprG4pHIEl8"
+    "tg_file_unique_id": "AQADGBprG4pHIEl8",
+    "name_en": "The Tower",
+    "name_uk": "Вежа"
   },
   {
     "id": 17,
@@ -393,7 +427,9 @@
     "short_reversed": "Потеря веры, разочарование, пессимизм.",
     "image_path": "data/images/rws/17.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIBh2mk1g9-KVB4LEc2gG-rH0lGcoukAAIDGmsbikcgST81qaCq2hTDAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADAxprG4pHIEl8"
+    "tg_file_unique_id": "AQADAxprG4pHIEl8",
+    "name_en": "The Star",
+    "name_uk": "Зірка"
   },
   {
     "id": 18,
@@ -415,7 +451,9 @@
     "short_reversed": "Рассеивание иллюзий, обман раскрывается.",
     "image_path": "data/images/rws/18.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "The Moon",
+    "name_uk": "Місяць"
   },
   {
     "id": 19,
@@ -437,7 +475,9 @@
     "short_reversed": "Радость приглушена, но свет рядом, небольшая задержка.",
     "image_path": "data/images/rws/19.jpg",
     "tg_file_id": "AgACAgIAAxUHaab2sxVgS9uyfy4PlP1vpBzC06YAAucXaxvpiThJgrkD2uLRbmIBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD5xdrG-mJOEl8"
+    "tg_file_unique_id": "AQAD5xdrG-mJOEl8",
+    "name_en": "The Sun",
+    "name_uk": "Сонце"
   },
   {
     "id": 20,
@@ -459,7 +499,9 @@
     "short_reversed": "Игнорирование внутреннего зова, самокритика.",
     "image_path": "data/images/rws/20.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIB22mlynLLya8ro7GIsVRPV4JnVym5AAL0FGsbfyMxSULxjD8HmniEAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQAD9BRrG38jMUl8"
+    "tg_file_unique_id": "AQAD9BRrG38jMUl8",
+    "name_en": "Judgement",
+    "name_uk": "Суд"
   },
   {
     "id": 21,
@@ -481,7 +523,9 @@
     "short_reversed": "Чувство незавершённости, финал откладывается.",
     "image_path": "data/images/rws/21.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTf5Q_mfvoDT_otTKuTnaZ0MREAAqATaxuKRyhJsGTYcAvT09ABAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADoBNrG4pHKEl8"
+    "tg_file_unique_id": "AQADoBNrG4pHKEl8",
+    "name_en": "The World",
+    "name_uk": "Світ"
   },
   {
     "id": 22,
@@ -503,7 +547,9 @@
     "short_reversed": "Энергия на нуле, ложный старт, откладывание.",
     "image_path": "data/images/rws/22.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICj2mm-7plo5hWbeJGOnLMZtk-hULXAAKsEWsb1hk5SV-6UpIoOl0SAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADrBFrG9YZOUl8"
+    "tg_file_unique_id": "AQADrBFrG9YZOUl8",
+    "name_en": "Ace of Wands",
+    "name_uk": "Туз Жезлів"
   },
   {
     "id": 23,
@@ -525,7 +571,9 @@
     "short_reversed": "Нерешительность, страх выбрать путь.",
     "image_path": "data/images/rws/23.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWeCJ1gaqN-L6cm35Y2mMxGxS0AAvcWaxu0hTBJOb2es-DhKcMBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD9xZrG7SFMEl8"
+    "tg_file_unique_id": "AQAD9xZrG7SFMEl8",
+    "name_en": "Two of Wands",
+    "name_uk": "Двійка Жезлів"
   },
   {
     "id": 24,
@@ -547,7 +595,9 @@
     "short_reversed": "Задержки в расширении, недальновидность.",
     "image_path": "data/images/rws/24.jpg",
     "tg_file_id": "BQACAgIAAxkDAAIBdmmk1F1GkdMVCbglJJ3zicTP7hcGAALQmwACikcgSXUAAUb1_bIZ5zoE",
-    "tg_file_unique_id": "AgAD0JsAAopHIEk"
+    "tg_file_unique_id": "AgAD0JsAAopHIEk",
+    "name_en": "Three of Wands",
+    "name_uk": "Трійка Жезлів"
   },
   {
     "id": 25,
@@ -569,7 +619,9 @@
     "short_reversed": "Нестабильная опора, переходный период.",
     "image_path": "data/images/rws/25.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWQbSc2eWVn9SYUtmKMjrps7QEAAtoYaxuKRyhJPbsuOZxMegoBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD2hhrG4pHKEl8"
+    "tg_file_unique_id": "AQAD2hhrG4pHKEl8",
+    "name_en": "Four of Wands",
+    "name_uk": "Четвірка Жезлів"
   },
   {
     "id": 26,
@@ -591,7 +643,9 @@
     "short_reversed": "Уход от конфликта или внутренняя борьба.",
     "image_path": "data/images/rws/26.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTVtSapqR_qGwuZ47f8dOLqBbMAAvwZaxuKRyBJ3SV_-vQDwCMBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD_BlrG4pHIEl8"
+    "tg_file_unique_id": "AQAD_BlrG4pHIEl8",
+    "name_en": "Five of Wands",
+    "name_uk": "П'ятірка Жезлів"
   },
   {
     "id": 27,
@@ -613,7 +667,9 @@
     "short_reversed": "Непризнание, провал после ожиданий.",
     "image_path": "data/images/rws/27.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICwWmm_FKk4PIUJG3R0zUwzrYVospNAAK5GWsbj0E5SbxGcczxlPG1AQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADuRlrG49BOUl8"
+    "tg_file_unique_id": "AQADuRlrG49BOUl8",
+    "name_en": "Six of Wands",
+    "name_uk": "Шістка Жезлів"
   },
   {
     "id": 28,
@@ -635,7 +691,9 @@
     "short_reversed": "Усталость от борьбы, желание сдаться.",
     "image_path": "data/images/rws/28.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Seven of Wands",
+    "name_uk": "Сімка Жезлів"
   },
   {
     "id": 29,
@@ -657,7 +715,9 @@
     "short_reversed": "Задержки, хаос, слишком быстро или слишком медленно.",
     "image_path": "data/images/rws/29.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWQbfBC9o_r4K_zLoWoH7rdZVMAAtgYaxuKRyhJNtNZk2vdM24BAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD2BhrG4pHKEl8"
+    "tg_file_unique_id": "AQAD2BhrG4pHKEl8",
+    "name_en": "Eight of Wands",
+    "name_uk": "Вісімка Жезлів"
   },
   {
     "id": 30,
@@ -679,7 +739,9 @@
     "short_reversed": "Выгорание, чрезмерная бдительность, истощение.",
     "image_path": "data/images/rws/30.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Nine of Wands",
+    "name_uk": "Дев'ятка Жезлів"
   },
   {
     "id": 31,
@@ -701,7 +763,9 @@
     "short_reversed": "Пора делегировать, сбросить лишний груз.",
     "image_path": "data/images/rws/31.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTf5U1IxyGAfgnJsXuRKsi2ULMAApwTaxuKRyhJ8Bf3raxf9RcBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADnBNrG4pHKEl8"
+    "tg_file_unique_id": "AQADnBNrG4pHKEl8",
+    "name_en": "Ten of Wands",
+    "name_uk": "Десятка Жезлів"
   },
   {
     "id": 32,
@@ -723,7 +787,9 @@
     "short_reversed": "Поспешность, незрелая идея, разочарование.",
     "image_path": "data/images/rws/32.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Page of Wands",
+    "name_uk": "Паж Жезлів"
   },
   {
     "id": 33,
@@ -745,7 +811,9 @@
     "short_reversed": "Импульсивность, разбросанность, агрессия.",
     "image_path": "data/images/rws/33.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Knight of Wands",
+    "name_uk": "Лицар Жезлів"
   },
   {
     "id": 34,
@@ -767,7 +835,9 @@
     "short_reversed": "Ревность, деспотичность, потеря уверенности.",
     "image_path": "data/images/rws/34.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIC0mmm_NiQhISGvqZ096oFMbKhtfEfAAJfEWsb47Q4ScFE3-Hks7QWAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADXxFrG-O0OEl8"
+    "tg_file_unique_id": "AQADXxFrG-O0OEl8",
+    "name_en": "Queen of Wands",
+    "name_uk": "Королева Жезлів"
   },
   {
     "id": 35,
@@ -789,7 +859,9 @@
     "short_reversed": "Тиран, нетерпимость, навязывание своей воли.",
     "image_path": "data/images/rws/35.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICI2mmvdY2NaNX4kHcBAiY1V1q7eTPAAIHHmsbC005SaM1f92Wu7_oAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADBx5rGwtNOUl8"
+    "tg_file_unique_id": "AQADBx5rGwtNOUl8",
+    "name_en": "King of Wands",
+    "name_uk": "Король Жезлів"
   },
   {
     "id": 36,
@@ -811,7 +883,9 @@
     "short_reversed": "Эмоциональная пустота, подавленные чувства.",
     "image_path": "data/images/rws/36.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Ace of Cups",
+    "name_uk": "Туз Кубків"
   },
   {
     "id": 37,
@@ -833,7 +907,9 @@
     "short_reversed": "Разлад в отношениях, нарушенный баланс.",
     "image_path": "data/images/rws/37.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTf5TGNzbYqL75YsxNzjBL33U8AAp8TaxuKRyhJm8ph6uyR444BAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADnxNrG4pHKEl8"
+    "tg_file_unique_id": "AQADnxNrG4pHKEl8",
+    "name_en": "Two of Cups",
+    "name_uk": "Двійка Кубків"
   },
   {
     "id": 38,
@@ -855,7 +931,9 @@
     "short_reversed": "Одиночество в толпе, сплетни, перебор.",
     "image_path": "data/images/rws/38.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Three of Cups",
+    "name_uk": "Трійка Кубків"
   },
   {
     "id": 39,
@@ -877,7 +955,9 @@
     "short_reversed": "Пробуждение интереса, выход из апатии.",
     "image_path": "data/images/rws/39.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICxmmm_InQrBhTdF8ybEv9hBumgmAlAAK0E2sbFWw5SQVCazc3t50GAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADtBNrGxVsOUl8"
+    "tg_file_unique_id": "AQADtBNrGxVsOUl8",
+    "name_en": "Four of Cups",
+    "name_uk": "Четвірка Кубків"
   },
   {
     "id": 40,
@@ -899,7 +979,9 @@
     "short_reversed": "Принятие утраты, готовность двигаться дальше.",
     "image_path": "data/images/rws/40.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIB82mmtNpXXopJu8lRrSz52WF_xknlAAIFF2sbDUY5SSP0J9CvuXKjAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADBRdrGw1GOUl8"
+    "tg_file_unique_id": "AQADBRdrGw1GOUl8",
+    "name_en": "Five of Cups",
+    "name_uk": "П'ятірка Кубків"
   },
   {
     "id": 41,
@@ -921,7 +1003,9 @@
     "short_reversed": "Застревание в прошлом, идеализация былого.",
     "image_path": "data/images/rws/41.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Six of Cups",
+    "name_uk": "Шістка Кубків"
   },
   {
     "id": 42,
@@ -943,7 +1027,9 @@
     "short_reversed": "Возврат к реальности, трезвый взгляд.",
     "image_path": "data/images/rws/42.jpg",
     "tg_file_id": "AgACAgIAAxUHaab2hnvcbxiKW-8jB8SwZ5X_LmgAAuAXaxvpiThJGcD9XJ4BvXgBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD4BdrG-mJOEl8"
+    "tg_file_unique_id": "AQAD4BdrG-mJOEl8",
+    "name_en": "Seven of Cups",
+    "name_uk": "Сімка Кубків"
   },
   {
     "id": 43,
@@ -965,7 +1051,9 @@
     "short_reversed": "Страх отпустить, цепляние за привычное.",
     "image_path": "data/images/rws/43.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICs2mm-_nKSWG_EFaQzOogqObuDMkYAAJoF2sbzJw4SauPh7sPGtvrAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADaBdrG8ycOEl8"
+    "tg_file_unique_id": "AQADaBdrG8ycOEl8",
+    "name_en": "Eight of Cups",
+    "name_uk": "Вісімка Кубків"
   },
   {
     "id": 44,
@@ -987,7 +1075,9 @@
     "short_reversed": "Жадность, ничего не достаточно.",
     "image_path": "data/images/rws/44.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Nine of Cups",
+    "name_uk": "Дев'ятка Кубків"
   },
   {
     "id": 45,
@@ -1009,7 +1099,9 @@
     "short_reversed": "Разлад в семье, нарушенная гармония.",
     "image_path": "data/images/rws/45.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIB4WmlzBVCGSWVgkV_c0vCfBh9BoiIAAIRFWsbfyMxSSoy89gaaDZ2AQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADERVrG38jMUl8"
+    "tg_file_unique_id": "AQADERVrG38jMUl8",
+    "name_en": "Ten of Cups",
+    "name_uk": "Десятка Кубків"
   },
   {
     "id": 46,
@@ -1031,7 +1123,9 @@
     "short_reversed": "Эмоциональная незрелость, капризность.",
     "image_path": "data/images/rws/46.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Page of Cups",
+    "name_uk": "Паж Кубків"
   },
   {
     "id": 47,
@@ -1053,7 +1147,9 @@
     "short_reversed": "Непостоянство, ревность, иллюзорная любовь.",
     "image_path": "data/images/rws/47.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Knight of Cups",
+    "name_uk": "Лицар Кубків"
   },
   {
     "id": 48,
@@ -1075,7 +1171,9 @@
     "short_reversed": "Эмоциональная зависимость, потеря себя в других.",
     "image_path": "data/images/rws/48.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTXng2vOm63hycif16MF3mgOtAAAhcaaxuKRyBJmI2DbmyQnyABAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADFxprG4pHIEl8"
+    "tg_file_unique_id": "AQADFxprG4pHIEl8",
+    "name_en": "Queen of Cups",
+    "name_uk": "Королева Кубків"
   },
   {
     "id": 49,
@@ -1097,7 +1195,9 @@
     "short_reversed": "Холодность, манипуляция чувствами.",
     "image_path": "data/images/rws/49.jpg",
     "tg_file_id": "AgACAgIAAxUHaab1sd_pJgsuJtWVTEo2UrQUlfAAAskXaxvpiThJOnfScCax4vcBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADyRdrG-mJOEl8"
+    "tg_file_unique_id": "AQADyRdrG-mJOEl8",
+    "name_en": "King of Cups",
+    "name_uk": "Король Кубків"
   },
   {
     "id": 50,
@@ -1119,7 +1219,9 @@
     "short_reversed": "Путаница в голове, ложная идея.",
     "image_path": "data/images/rws/50.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Ace of Swords",
+    "name_uk": "Туз Мечів"
   },
   {
     "id": 51,
@@ -1141,7 +1243,9 @@
     "short_reversed": "Самообман, откладывание решения.",
     "image_path": "data/images/rws/51.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Two of Swords",
+    "name_uk": "Двійка Мечів"
   },
   {
     "id": 52,
@@ -1163,7 +1267,9 @@
     "short_reversed": "Начало исцеления, прощение, отпускание боли.",
     "image_path": "data/images/rws/52.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Three of Swords",
+    "name_uk": "Трійка Мечів"
   },
   {
     "id": 53,
@@ -1185,7 +1291,9 @@
     "short_reversed": "Невозможность расслабиться, тревога даже в покое.",
     "image_path": "data/images/rws/53.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICgGmm-04GwQABaPXTfdEoXnwPQYiG8gACUBprG8f5OEkuc2sSNs_GpAEAAwIAA3cAAzoE",
-    "tg_file_unique_id": "AQADUBprG8f5OEl8"
+    "tg_file_unique_id": "AQADUBprG8f5OEl8",
+    "name_en": "Four of Swords",
+    "name_uk": "Четвірка Мечів"
   },
   {
     "id": 54,
@@ -1207,7 +1315,9 @@
     "short_reversed": "Время мириться, отпустить гордость.",
     "image_path": "data/images/rws/54.jpg",
     "tg_file_id": "AgACAgIAAxUHaab1sfPv5g9Cr0yrVUHYrHMUdgoAAssXaxvpiThJePFoQiRv8pgBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADyxdrG-mJOEl8"
+    "tg_file_unique_id": "AQADyxdrG-mJOEl8",
+    "name_en": "Five of Swords",
+    "name_uk": "П'ятірка Мечів"
   },
   {
     "id": 55,
@@ -1229,7 +1339,9 @@
     "short_reversed": "Невозможность уйти, возвращение к старому.",
     "image_path": "data/images/rws/55.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICCGmmvHnzEZDonq2BVBVz8MkVO_TiAAKxFWsbanU4SVoxAAFhgIJyPgEAAwIAA3cAAzoE",
-    "tg_file_unique_id": "AQADsRVrG2p1OEl8"
+    "tg_file_unique_id": "AQADsRVrG2p1OEl8",
+    "name_en": "Six of Swords",
+    "name_uk": "Шістка Мечів"
   },
   {
     "id": 56,
@@ -1251,7 +1363,9 @@
     "short_reversed": "Обман раскрыт, время быть честным.",
     "image_path": "data/images/rws/56.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTf5SSffbUIEKyUlIMsLruggScAAp0TaxuKRyhJXjCUixkyfVcBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADnRNrG4pHKEl8"
+    "tg_file_unique_id": "AQADnRNrG4pHKEl8",
+    "name_en": "Seven of Swords",
+    "name_uk": "Сімка Мечів"
   },
   {
     "id": 57,
@@ -1273,7 +1387,9 @@
     "short_reversed": "Снятие повязки, осознание выхода.",
     "image_path": "data/images/rws/57.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Eight of Swords",
+    "name_uk": "Вісімка Мечів"
   },
   {
     "id": 58,
@@ -1295,7 +1411,9 @@
     "short_reversed": "Рассвет после тёмной ночи, тревога уходит.",
     "image_path": "data/images/rws/58.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICDmmmvMKut6eGzxxO8XFdE-yKL6qtAAL9HWsbC005SeECOPJyK0GLAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQAD_R1rGwtNOUl8"
+    "tg_file_unique_id": "AQAD_R1rGwtNOUl8",
+    "name_en": "Nine of Swords",
+    "name_uk": "Дев'ятка Мечів"
   },
   {
     "id": 59,
@@ -1317,7 +1435,9 @@
     "short_reversed": "Худшее позади, медленный подъём.",
     "image_path": "data/images/rws/59.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICX2mm99Ny70JY0-XWMGfTPBABGbv7AALrF2sb6Yk4SbV9hdxdV0AyAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQAD6xdrG-mJOEl8"
+    "tg_file_unique_id": "AQAD6xdrG-mJOEl8",
+    "name_en": "Ten of Swords",
+    "name_uk": "Десятка Мечів"
   },
   {
     "id": 60,
@@ -1339,7 +1459,9 @@
     "short_reversed": "Сплетни, поспешные суждения, цинизм.",
     "image_path": "data/images/rws/60.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Page of Swords",
+    "name_uk": "Паж Мечів"
   },
   {
     "id": 61,
@@ -1361,7 +1483,9 @@
     "short_reversed": "Грубость, безрассудность, слова ранят.",
     "image_path": "data/images/rws/61.jpg",
     "tg_file_id": "AgACAgIAAxUHaab1sfZAtaAPGmCIFBLPIdrmjoUAAs0XaxvpiThJPSqwjMR5Q1wBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADzRdrG-mJOEl8"
+    "tg_file_unique_id": "AQADzRdrG-mJOEl8",
+    "name_en": "Knight of Swords",
+    "name_uk": "Лицар Мечів"
   },
   {
     "id": 62,
@@ -1383,7 +1507,9 @@
     "short_reversed": "Излишняя холодность, горечь, отчуждение.",
     "image_path": "data/images/rws/62.jpg",
     "tg_file_id": "AgACAgIAAxUHaaTXnnEvaflnAeurYUp-U89kUA0AAhkaaxuKRyBJuuctvfKWMNkBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADGRprG4pHIEl8"
+    "tg_file_unique_id": "AQADGRprG4pHIEl8",
+    "name_en": "Queen of Swords",
+    "name_uk": "Королева Мечів"
   },
   {
     "id": 63,
@@ -1405,7 +1531,9 @@
     "short_reversed": "Тирания разума, холодная манипуляция.",
     "image_path": "data/images/rws/63.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWeCGgE5BBaYNDaKkQ8UFCClE8AAvUWaxu0hTBJYsD7DSAgubwBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD9RZrG7SFMEl8"
+    "tg_file_unique_id": "AQAD9RZrG7SFMEl8",
+    "name_en": "King of Swords",
+    "name_uk": "Король Мечів"
   },
   {
     "id": 64,
@@ -1427,7 +1555,9 @@
     "short_reversed": "Упущенный шанс, финансовая нестабильность.",
     "image_path": "data/images/rws/64.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWeCJsd9jZbXX_8MDzTCx2kLD8AAvYWaxu0hTBJ2IYNMf-AAvMBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD9hZrG7SFMEl8"
+    "tg_file_unique_id": "AQAD9hZrG7SFMEl8",
+    "name_en": "Ace of Pentacles",
+    "name_uk": "Туз Пентаклів"
   },
   {
     "id": 65,
@@ -1449,7 +1579,9 @@
     "short_reversed": "Перегрузка, невозможность удержать баланс.",
     "image_path": "data/images/rws/65.jpg",
     "tg_file_id": "AgACAgIAAxUHaab1sTGCtrTYbNZd77_Hn41QSjMAAswXaxvpiThJ-kvXkjsVz68BAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADzBdrG-mJOEl8"
+    "tg_file_unique_id": "AQADzBdrG-mJOEl8",
+    "name_en": "Two of Pentacles",
+    "name_uk": "Двійка Пентаклів"
   },
   {
     "id": 66,
@@ -1471,7 +1603,9 @@
     "short_reversed": "Конфликт в коллективе, некачественная работа.",
     "image_path": "data/images/rws/66.jpg",
     "tg_file_id": "AgACAgIAAxkDAAIBoWmk39Ia2sQs-VByJecWWIf0K9rOAAKbE2sbikcoSd-Q_MNuWoAtAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADmxNrG4pHKEl8"
+    "tg_file_unique_id": "AQADmxNrG4pHKEl8",
+    "name_en": "Three of Pentacles",
+    "name_uk": "Трійка Пентаклів"
   },
   {
     "id": 67,
@@ -1493,7 +1627,9 @@
     "short_reversed": "Жадность, слишком крепкая хватка.",
     "image_path": "data/images/rws/67.jpg",
     "tg_file_id": "AgACAgIAAxUHaab1sW39BHv2_bCrA4utI4rXIgwAAsoXaxvpiThJ3jdCtVH5BPYBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQADyhdrG-mJOEl8"
+    "tg_file_unique_id": "AQADyhdrG-mJOEl8",
+    "name_en": "Four of Pentacles",
+    "name_uk": "Четвірка Пентаклів"
   },
   {
     "id": 68,
@@ -1515,7 +1651,9 @@
     "short_reversed": "Кризис отступает, помощь приходит.",
     "image_path": "data/images/rws/68.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Five of Pentacles",
+    "name_uk": "П'ятірка Пентаклів"
   },
   {
     "id": 69,
@@ -1537,7 +1675,9 @@
     "short_reversed": "Неравный обмен, зависимость от чужой помощи.",
     "image_path": "data/images/rws/69.jpg",
     "tg_file_id": "AgACAgIAAxUHaab2hm1ZQHvQptI0MHWtVkC6HFIAAuEXaxvpiThJeAjcZrIC9X0BAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD4RdrG-mJOEl8"
+    "tg_file_unique_id": "AQAD4RdrG-mJOEl8",
+    "name_en": "Six of Pentacles",
+    "name_uk": "Шістка Пентаклів"
   },
   {
     "id": 70,
@@ -1559,7 +1699,9 @@
     "short_reversed": "Нетерпение, разочарование в результатах.",
     "image_path": "data/images/rws/70.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWeCAZTk7yTU6odZ-GqOD8U1qgAAvQWaxu0hTBJPe2Tb5WCOPsBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD9BZrG7SFMEl8"
+    "tg_file_unique_id": "AQAD9BZrG7SFMEl8",
+    "name_en": "Seven of Pentacles",
+    "name_uk": "Сімка Пентаклів"
   },
   {
     "id": 71,
@@ -1581,7 +1723,9 @@
     "short_reversed": "Рутина без развития, перфекционизм.",
     "image_path": "data/images/rws/71.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Eight of Pentacles",
+    "name_uk": "Вісімка Пентаклів"
   },
   {
     "id": 72,
@@ -1603,7 +1747,9 @@
     "short_reversed": "Одиночество в роскоши, чрезмерные траты.",
     "image_path": "data/images/rws/72.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Nine of Pentacles",
+    "name_uk": "Дев'ятка Пентаклів"
   },
   {
     "id": 73,
@@ -1625,7 +1771,9 @@
     "short_reversed": "Семейные споры, финансовые разногласия.",
     "image_path": "data/images/rws/73.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Ten of Pentacles",
+    "name_uk": "Десятка Пентаклів"
   },
   {
     "id": 74,
@@ -1647,7 +1795,9 @@
     "short_reversed": "Лень, незрелый подход к делу.",
     "image_path": "data/images/rws/74.jpg",
     "tg_file_id": "AgACAgIAAxUHaab4Ng4laHp2LjJ80j-RYBcyV04AAvEXaxvpiThJtyu4JI8Ki20BAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD8RdrG-mJOEl8"
+    "tg_file_unique_id": "AQAD8RdrG-mJOEl8",
+    "name_en": "Page of Pentacles",
+    "name_uk": "Паж Пентаклів"
   },
   {
     "id": 75,
@@ -1669,7 +1819,9 @@
     "short_reversed": "Упрямый застой, лень, медлительность.",
     "image_path": "data/images/rws/75.jpg",
     "tg_file_id": "AgACAgIAAxkDAAICiGmm-3yzGvuO17weKPHi9DYn10nvAAIQFmsbnqA4SZbFgiDw-vGAAQADAgADdwADOgQ",
-    "tg_file_unique_id": "AQADEBZrG56gOEl8"
+    "tg_file_unique_id": "AQADEBZrG56gOEl8",
+    "name_en": "Knight of Pentacles",
+    "name_uk": "Лицар Пентаклів"
   },
   {
     "id": 76,
@@ -1691,7 +1843,9 @@
     "short_reversed": "Скупость, зацикленность на материальном.",
     "image_path": "data/images/rws/76.jpg",
     "tg_file_id": null,
-    "tg_file_unique_id": null
+    "tg_file_unique_id": null,
+    "name_en": "Queen of Pentacles",
+    "name_uk": "Королева Пентаклів"
   },
   {
     "id": 77,
@@ -1713,6 +1867,8 @@
     "short_reversed": "Жадность, коррупция, деньги важнее людей.",
     "image_path": "data/images/rws/77.jpg",
     "tg_file_id": "AgACAgIAAxUHaaWeCOspuZZ-r0craxEC8wood0cAAvMWaxu0hTBJl_rqJrHKlWMBAAMCAAN3AAM6BA",
-    "tg_file_unique_id": "AQAD8xZrG7SFMEl8"
+    "tg_file_unique_id": "AQAD8xZrG7SFMEl8",
+    "name_en": "King of Pentacles",
+    "name_uk": "Король Пентаклів"
   }
 ]

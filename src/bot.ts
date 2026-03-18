@@ -2,7 +2,7 @@ import "dotenv/config";
 import { existsSync } from "fs";
 import { join } from "path";
 import { Bot, InlineKeyboard, Context, InputFile } from "grammy";
-import { Spread, getAllSpreads, getSpreadById } from "./tarot/spreads";
+import { Spread, getAllSpreads, getSpreadById, getLocalizedSpread } from "./tarot/spreads";
 import { drawCards } from "./tarot/deck";
 import { buildReadingContext, formatCardsMessage } from "./tarot/reading";
 import { checkSafety } from "./safety";
@@ -20,7 +20,8 @@ import {
 } from "./db";
 import { startDailyCron, sendDailyToUser, todayDateStr } from "./daily";
 import { startAdmin } from "./admin";
-import { getCardById } from "./tarot/cards";
+import { getCardById, getCardName } from "./tarot/cards";
+import { t, getUserLang, setUserLang, detectLang, Lang } from "./i18n";
 
 const token = process.env["TELEGRAM_BOT_TOKEN"];
 if (!token) {
@@ -34,6 +35,7 @@ type Phase = "idle" | "awaiting_question" | "awaiting_spread" | "confirming" | "
 
 interface UserState {
   phase: Phase;
+  lang: Lang;
   question?: string;
   spreadId?: string;
   pendingText?: string;
@@ -48,8 +50,15 @@ interface UserState {
 const sessions = new Map<number, UserState>();
 
 function getState(chatId: number): UserState {
-  if (!sessions.has(chatId)) sessions.set(chatId, { phase: "idle" });
+  if (!sessions.has(chatId)) sessions.set(chatId, { phase: "idle", lang: "ru" });
   return sessions.get(chatId)!;
+}
+
+function getLang(ctx: Context): Lang {
+  const state = sessions.get(ctx.chat!.id);
+  if (state?.lang) return state.lang;
+  if (ctx.from) return getUserLang(ctx.from.id);
+  return "ru";
 }
 
 async function withChatAction<T>(
@@ -68,8 +77,9 @@ async function withChatAction<T>(
   }
 }
 
-const DISCLAIMER =
-  "\n\n· · ·\n🔮 Расклад — инструмент саморефлексии и развлечения. Не является медицинским, юридическим или финансовым советом.";
+function DISCLAIMER(lang: Lang): string {
+  return t("common.disclaimer", lang);
+}
 
 // ── /start ──────────────────────────────────────────────────────────────────
 bot.command("start", async (ctx) => {
@@ -87,16 +97,42 @@ bot.command("start", async (ctx) => {
   );
   subscribeDailyCard(ctx.from!.id);
 
-  const startKb = new InlineKeyboard()
-    .text("🔮 Начать расклад", "begin_reading");
+  // Auto-detect language for first-time users, then show chooser
+  const detected = detectLang(ctx.from?.language_code);
+  state.lang = getUserLang(ctx.from!.id) || detected;
+
+  const langKb = new InlineKeyboard()
+    .text("\ud83c\uddfa\ud83c\udde6 Українська", "set_lang:uk")
+    .text("\ud83c\uddec\ud83c\udde7 English", "set_lang:en")
+    .text("\ud83c\uddf7\ud83c\uddfa Русский", "set_lang:ru");
 
   await ctx.reply(
-    "🌙 <b>Добро пожаловать в пространство Таро.</b>\n\n" +
-      "Я помогу тебе заглянуть за завесу привычного и увидеть ситуацию глазами карт. " +
-      "Это не пророчество и не приговор — <i>воспринимай расклад как зеркало, " +
-      "в котором отражаются скрытые грани твоего вопроса.</i>\n\n" +
-      "Когда будешь готов(а), нажми кнопку ниже ✨",
-    { parse_mode: "HTML", reply_markup: startKb }
+    t("lang.choose", state.lang),
+    { parse_mode: "HTML", reply_markup: langKb }
+  );
+});
+
+// ── Выбор языка ─────────────────────────────────────────────────────────────
+bot.callbackQuery(/^set_lang:/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const lang = ctx.callbackQuery.data.replace("set_lang:", "") as Lang;
+  if (!["ru", "uk", "en"].includes(lang)) return;
+
+  const state = getState(ctx.chat!.id);
+  state.lang = lang;
+  setUserLang(ctx.from!.id, lang);
+
+  // Убираем кнопки выбора языка
+  try {
+    await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  } catch (_) {}
+
+  const kb = new InlineKeyboard()
+    .text(t("btn.begin_reading", lang), "begin_reading");
+
+  await ctx.reply(
+    t("lang.set", lang) + "\n\n" + t("start.welcome", lang),
+    { parse_mode: "HTML", reply_markup: kb }
   );
 });
 
@@ -108,53 +144,53 @@ bot.callbackQuery("begin_reading", async (ctx) => {
   state.question = undefined;
   state.spreadId = undefined;
 
-  await ctx.reply(
-    "🕯 <b>Сосредоточься и задай свой вопрос.</b>\n\n" +
-      "<i>Чем яснее намерение — тем точнее отклик карт.</i> " +
-      "Напиши то, что тревожит, интересует или не даёт покоя.",
-    { parse_mode: "HTML" }
-  );
+  const L = getLang(ctx);
+  await ctx.reply(t("start.ask_question", L), { parse_mode: "HTML" });
 });
 
 // ── Выбор расклада (inline keyboard) ────────────────────────────────────────
-function spreadKeyboard(userId: number): InlineKeyboard {
+function spreadKeyboard(userId: number, lang: Lang): InlineKeyboard {
   const freeLeft = getFreeReadings(userId);
   const kb = new InlineKeyboard();
   for (const s of getAllSpreads()) {
+    const ls = getLocalizedSpread(s, lang);
     let label: string;
     if (s.id === "whisper" && freeLeft > 0) {
-      label = `✦ ${s.name} (${s.count}) — бесплатно [${freeLeft}]`;
+      label = t("spread.label_free", lang, { name: ls.name, count: ls.count, left: freeLeft });
     } else if (s.price > 0) {
-      label = `✦ ${s.name} (${s.count}) — ⭐ ${s.price}`;
+      label = t("spread.label_paid", lang, { name: ls.name, count: ls.count, price: s.price });
     } else {
-      label = `✦ ${s.name} (${s.count})`;
+      label = t("spread.label_basic", lang, { name: ls.name, count: ls.count });
     }
     kb.text(label, `spread:${s.id}`).row();
   }
-  kb.text("❓ Чем отличаются расклады?", "spreads_info").row();
+  kb.text(t("btn.spreads_info", lang), "spreads_info").row();
   return kb;
 }
 
 async function askSpread(ctx: Context) {
+  const L = getLang(ctx);
   await ctx.reply(
-    "🃏 <b>Какой расклад тебя зовёт?</b>",
-    { parse_mode: "HTML", reply_markup: spreadKeyboard(ctx.from!.id) }
+    t("spread.choose", L),
+    { parse_mode: "HTML", reply_markup: spreadKeyboard(ctx.from!.id, L) }
   );
 }
 
 // ── Информация о раскладах ──────────────────────────────────────────────────
 bot.callbackQuery("spreads_info", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const L = getLang(ctx);
 
   const lines = getAllSpreads().map((s) => {
-    const priceTag = s.price > 0 ? `⭐ ${s.price}` : "бесплатно";
-    return `<b>✦ ${s.name}</b>  •  ${s.count} карт  •  ${priceTag}\n<i>${s.description}</i>`;
+    const ls = getLocalizedSpread(s, L);
+    const priceTag = s.price > 0 ? `⭐ ${s.price}` : t("spread.price_free", L);
+    return t("spread.info_line", L, { name: ls.name, count: ls.count, priceTag, description: ls.description });
   });
 
-  const backKb = new InlineKeyboard().text("🃏 Вернуться к выбору", "back_to_spreads");
+  const backKb = new InlineKeyboard().text(t("btn.back_to_spreads", L), "back_to_spreads");
 
   await ctx.reply(
-    "🌙 <b>О раскладах</b>\n\n" + lines.join("\n\n"),
+    t("spread.info_title", L) + "\n\n" + lines.join("\n\n"),
     { parse_mode: "HTML", reply_markup: backKb }
   );
 });
@@ -174,10 +210,8 @@ bot.callbackQuery(/^spread:/, async (ctx) => {
 
   if (!state.question) {
     state.phase = "awaiting_question";
-    await ctx.reply(
-      "🕯 <b>Сначала задай свой вопрос</b> — карты ждут намерения.",
-      { parse_mode: "HTML" }
-    );
+    const L = getLang(ctx);
+    await ctx.reply(t("spread.ask_question_first", L), { parse_mode: "HTML" });
     return;
   }
 
@@ -186,13 +220,14 @@ bot.callbackQuery(/^spread:/, async (ctx) => {
 
 // ── Оплата Telegram Stars ──────────────────────────────────────────────────
 async function sendStarInvoice(ctx: Context, spread: Spread) {
+  const L = getLang(ctx);
   await ctx.api.sendInvoice(
     ctx.chat!.id,
-    `🔮 ${spread.name}`,
-    "Расклад карт Таро с персональной трактовкой от карт",
+    t("payment.invoice_title", L, { name: getLocalizedSpread(spread, L).name }),
+    t("payment.invoice_desc", L),
     `pay:${spread.id}`,
     "XTR",
-    [{ label: spread.name, amount: spread.price }],
+    [{ label: getLocalizedSpread(spread, L).name, amount: spread.price }],
     { provider_token: "" }
   );
 }
@@ -215,8 +250,9 @@ bot.on("message:successful_payment", async (ctx) => {
     state.lastPaymentChargeId = payment.telegram_payment_charge_id;
     state.phase = "idle";
 
+    const L = getLang(ctx);
     if (!state.lastInterpretation) {
-      await ctx.reply("🌑 <i>Нечего озвучивать — расклад не найден.</i>", { parse_mode: "HTML" });
+      await ctx.reply(t("voice.not_found", L), { parse_mode: "HTML" });
       return;
     }
 
@@ -226,11 +262,11 @@ bot.on("message:successful_payment", async (ctx) => {
       );
 
       const voiceKb = new InlineKeyboard()
-        .text("🔮 Новый расклад", "new_reading")
+        .text(t("btn.new_reading", L), "new_reading")
         .row()
-        .text("🃏 Сменить расклад", "change_spread")
+        .text(t("btn.change_spread", L), "change_spread")
         .row()
-        .text("✏️ Изменить вопрос", "change_question");
+        .text(t("btn.change_question", L), "change_question");
 
       await ctx.replyWithVoice(new InputFile(audioBuf, "reading.ogg"), {
         reply_markup: voiceKb,
@@ -245,18 +281,10 @@ bot.on("message:successful_payment", async (ctx) => {
             user_id: ctx.from!.id,
             telegram_payment_charge_id: payment.telegram_payment_charge_id,
           });
-          await ctx.reply(
-            "🔇 <b>Не удалось отправить голосовое</b> — у тебя запрещён приём голосовых сообщений.\n\n" +
-            "⭐ <b>Звёзды возвращены.</b>\n\n" +
-            "Чтобы получить озвучку:\n" +
-            "<i>Настройки Telegram → Конфиденциальность → Голосовые сообщения → Разрешить для всех</i>",
-            { parse_mode: "HTML" }
-          );
+          await ctx.reply(t("voice.forbidden_refund", L), { parse_mode: "HTML" });
         } catch (refundErr) {
           console.error("Refund error:", refundErr);
-          await ctx.reply(
-            "🔇 Не удалось отправить голосовое — у тебя запрещён приём голосовых. Напиши @support для возврата звёзд.",
-          );
+          await ctx.reply(t("voice.forbidden_no_refund", L));
         }
       } else {
         // Other TTS/send error — also refund
@@ -265,15 +293,10 @@ bot.on("message:successful_payment", async (ctx) => {
             user_id: ctx.from!.id,
             telegram_payment_charge_id: payment.telegram_payment_charge_id,
           });
-          await ctx.reply(
-            "🌑 <i>Не удалось озвучить расклад...</i> ⭐ Звёзды возвращены. Попробуй чуть позже.",
-            { parse_mode: "HTML" }
-          );
+          await ctx.reply(t("voice.error_refund", L), { parse_mode: "HTML" });
         } catch (refundErr) {
           console.error("Refund error:", refundErr);
-          await ctx.reply(
-            "🌑 Не удалось озвучить расклад... Попробуй чуть позже.",
-          );
+          await ctx.reply(t("voice.error_no_refund", L));
         }
       }
     }
@@ -284,10 +307,11 @@ bot.on("message:successful_payment", async (ctx) => {
   if (payload === "pay:daily") {
     savePayment(ctx.from!.id, payment.total_amount, payload, payment.telegram_payment_charge_id);
 
+    const L = getLang(ctx);
     const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
     if (!today || today.revealed) {
       state.phase = "idle";
-      await ctx.reply("✨ <i>Карта дня уже раскрыта или не найдена.</i>", { parse_mode: "HTML" });
+      await ctx.reply(t("daily.revealed_already", L), { parse_mode: "HTML" });
       return;
     }
 
@@ -295,12 +319,12 @@ bot.on("message:successful_payment", async (ctx) => {
     const card = getCardById(today.card_id);
     if (!card) {
       state.phase = "idle";
-      await ctx.reply("🌑 <i>Что-то пошло не так...</i>", { parse_mode: "HTML" });
+      await ctx.reply(t("common.error", L), { parse_mode: "HTML" });
       return;
     }
 
     const reversed = today.reversed === 1;
-    const orient = reversed ? "перевёрнутая" : "прямая";
+    const orient = t(reversed ? "common.reversed" : "common.upright", L);
     const meaning = reversed ? card.short_reversed : card.short_upright;
     const keywords = reversed ? card.keywords_reversed : card.keywords_upright;
 
@@ -317,10 +341,9 @@ bot.on("message:successful_payment", async (ctx) => {
     if (photoSrc) {
       try {
         const result = await ctx.api.sendPhoto(ctx.chat!.id, photoSrc, {
-          caption:
-            `🌅 <b>Твоя карта дня: ${card.name_ru}</b> (${orient})\n\n` +
-            `✨ <i>${meaning}</i>\n\n` +
-            `🔑 ${keywords.join(", ")}`,
+          caption: t("daily.card_caption", L, {
+            name: getCardName(card, L), orient, meaning, keywords: keywords.join(", "),
+          }),
           parse_mode: "HTML",
         });
         if (!cached && result.photo?.length) {
@@ -339,10 +362,7 @@ bot.on("message:successful_payment", async (ctx) => {
     state.paid = true;
     state.phase = "awaiting_question";
 
-    await ctx.reply(
-      "🕯 <b>Задай вопрос этой карте</b> — <i>и она раскроет для тебя свой шёпот.</i>",
-      { parse_mode: "HTML" }
-    );
+    await ctx.reply(t("daily.ask_card_question", L), { parse_mode: "HTML" });
     return;
   }
 
@@ -358,7 +378,8 @@ bot.on("message:successful_payment", async (ctx) => {
   );
 
   state.paid = true;
-  await ctx.reply("⭐ <b>Оплата получена.</b> <i>Карты благодарят за доверие...</i>", { parse_mode: "HTML" });
+  const L2 = getLang(ctx);
+  await ctx.reply(t("payment.received", L2), { parse_mode: "HTML" });
   await doReading(ctx, state);
 });
 
@@ -388,10 +409,8 @@ bot.callbackQuery("edit_question", async (ctx) => {
   const state = getState(ctx.chat!.id);
   state.pendingText = undefined;
   state.phase = "awaiting_question";
-  await ctx.reply(
-    "✏️ Напиши вопрос заново — <i>карты терпеливо ждут.</i>",
-    { parse_mode: "HTML" }
-  );
+  const L = getLang(ctx);
+  await ctx.reply(t("question.rewrite", L), { parse_mode: "HTML" });
 });
 
 bot.callbackQuery("decline_question", async (ctx) => {
@@ -399,9 +418,10 @@ bot.callbackQuery("decline_question", async (ctx) => {
   const state = getState(ctx.chat!.id);
   state.pendingText = undefined;
   state.phase = "idle";
-  await ctx.reply("✨ Хорошо. <i>Когда захочешь обратиться к картам — я здесь.</i>", {
+  const L = getLang(ctx);
+  await ctx.reply(t("question.declined", L), {
     parse_mode: "HTML",
-    reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading"),
+    reply_markup: new InlineKeyboard().text(t("btn.begin_reading", L), "begin_reading"),
   });
 });
 
@@ -413,11 +433,9 @@ bot.callbackQuery("cancel_payment", async (ctx) => {
   state.spreadId = undefined;
   state.paid = false;
 
-  const kb = new InlineKeyboard().text("🔮 Начать расклад", "begin_reading");
-  await ctx.reply(
-    "✨ Расклад отменён. <i>Когда будешь готов(а) — карты ждут.</i>",
-    { parse_mode: "HTML", reply_markup: kb }
-  );
+  const L = getLang(ctx);
+  const kb = new InlineKeyboard().text(t("btn.begin_reading", L), "begin_reading");
+  await ctx.reply(t("payment.cancelled", L), { parse_mode: "HTML", reply_markup: kb });
 });
 
 // ── Callback: кнопки после расклада ─────────────────────────────────────────
@@ -427,10 +445,8 @@ bot.callbackQuery("new_reading", async (ctx) => {
   state.question = undefined;
   state.spreadId = undefined;
   state.phase = "awaiting_question";
-  await ctx.reply(
-    "🕯 <b>Новый расклад...</b> Сосредоточься и задай свой вопрос.",
-    { parse_mode: "HTML" }
-  );
+  const L = getLang(ctx);
+  await ctx.reply(t("question.new", L), { parse_mode: "HTML" });
 });
 
 bot.callbackQuery("change_spread", async (ctx) => {
@@ -446,10 +462,8 @@ bot.callbackQuery("change_question", async (ctx) => {
   const state = getState(ctx.chat!.id);
   state.question = undefined;
   state.phase = "awaiting_question";
-  await ctx.reply(
-    "🕯 Расклад сохранён. <i>Сформулируй новый вопрос — карты готовы слушать.</i>",
-    { parse_mode: "HTML" }
-  );
+  const L = getLang(ctx);
+  await ctx.reply(t("question.change", L), { parse_mode: "HTML" });
 });
 
 // ── Текстовое сообщение ────────────────────────────────────────────────────
@@ -459,8 +473,10 @@ bot.on("message:text", async (ctx) => {
 
   const state = getState(ctx.chat.id);
 
+  const L = getLang(ctx);
+
   // Проверка безопасности всегда
-  const safety = checkSafety(text);
+  const safety = checkSafety(text, L);
   if (!safety.safe) {
     state.phase = "idle";
     await ctx.reply(safety.message, { parse_mode: "HTML" });
@@ -482,7 +498,7 @@ bot.on("message:text", async (ctx) => {
 
   // Во время ожидания оплаты — игнорируем текст
   if (state.phase === "awaiting_payment") {
-    await ctx.reply("⭐ Сначала оплати или отмени расклад выше.", { parse_mode: "HTML" });
+    await ctx.reply(t("payment.pay_first", L), { parse_mode: "HTML" });
     return;
   }
 
@@ -491,23 +507,21 @@ bot.on("message:text", async (ctx) => {
   state.phase = "confirming";
 
   const confirmKb = new InlineKeyboard()
-    .text("🔮 Да, сделать расклад", "confirm_question")
+    .text(t("btn.confirm_yes", L), "confirm_question")
     .row()
-    .text("✏️ Уточнить вопрос", "edit_question")
+    .text(t("btn.confirm_edit", L), "edit_question")
     .row()
-    .text("Нет, просто так", "decline_question");
+    .text(t("btn.confirm_no", L), "decline_question");
 
-  await ctx.reply(
-    "✨ <b>Хочешь обратиться к картам с этим вопросом?</b>",
-    { parse_mode: "HTML", reply_markup: confirmKb }
-  );
+  await ctx.reply(t("question.confirm", L), { parse_mode: "HTML", reply_markup: confirmKb });
 });
 
 // ── Основная логика расклада ────────────────────────────────────────────────
 async function doReading(ctx: Context, state: UserState) {
+  const L = getLang(ctx);
   const spread = getSpreadById(state.spreadId!);
   if (!spread) {
-    await ctx.reply("🌑 <i>Расклад затерялся в тумане...</i> Попробуй выбрать снова.", { parse_mode: "HTML" });
+    await ctx.reply(t("reading.spread_not_found", L), { parse_mode: "HTML" });
     return;
   }
 
@@ -519,12 +533,12 @@ async function doReading(ctx: Context, state: UserState) {
     await sendStarInvoice(ctx, spread);
 
     const freeLeft = spread.id === "whisper" ? getFreeReadings(ctx.from!.id) : -1;
-    const freeHint = freeLeft === 0 ? "\n<i>(Бесплатные расклады закончились)</i>" : "";
+    const freeHint = freeLeft === 0 ? "\n" + t("reading.free_ended", L) : "";
 
     const cancelKb = new InlineKeyboard()
-      .text("❌ Отменить", "cancel_payment");
+      .text(t("btn.cancel", L), "cancel_payment");
     await ctx.reply(
-      `⭐ Для этого расклада нужна оплата (<b>${spread.price} Stars</b>). Оплати выше или отмени расклад.${freeHint}`,
+      t("payment.required", L, { price: spread.price }) + freeHint,
       { parse_mode: "HTML", reply_markup: cancelKb }
     );
     return;
@@ -534,15 +548,9 @@ async function doReading(ctx: Context, state: UserState) {
     decrementFreeReading(ctx.from!.id);
     const left = getFreeReadings(ctx.from!.id);
     if (left > 0) {
-      await ctx.reply(
-        `✨ <i>Бесплатный расклад! Осталось ещё: ${left}</i>`,
-        { parse_mode: "HTML" }
-      );
+      await ctx.reply(t("reading.free_left", L, { left }), { parse_mode: "HTML" });
     } else {
-      await ctx.reply(
-        "✨ <i>Это твой последний бесплатный расклад «Шёпот карты».</i>",
-        { parse_mode: "HTML" }
-      );
+      await ctx.reply(t("reading.free_last", L), { parse_mode: "HTML" });
     }
   }
 
@@ -566,8 +574,9 @@ async function doReading(ctx: Context, state: UserState) {
     drawn = drawCards(spread.count);
   }
 
-  const readingCtx = buildReadingContext(question, spread, drawn);
-  const cardsMsg = formatCardsMessage(readingCtx);
+  const ls = getLocalizedSpread(spread, L);
+  const readingCtx = buildReadingContext(question, { ...spread, name: ls.name, positions: ls.positions }, drawn, L);
+  const cardsMsg = formatCardsMessage(readingCtx, L);
 
   const cardsJson = JSON.stringify(
     drawn.map((d) => ({ id: d.card.id, name: d.card.name_ru, reversed: d.reversed }))
@@ -576,22 +585,21 @@ async function doReading(ctx: Context, state: UserState) {
   state.lastReadingId = readingId;
 
   await ctx.reply(
-    `🃏 <b>${spread.name}</b>\n\n${cardsMsg}\n\n` +
-      "<i>Карты раскрываются, ожидай минутку... Позволь им рассказать свою историю</i> 🌙",
+    t("reading.cards_drawn", L, { spread: ls.name, cards: cardsMsg }),
     { parse_mode: "HTML" }
   );
 
   try {
-    await sendCardsMediaGroup(ctx.api, ctx.chat!.id, drawn);
+    await sendCardsMediaGroup(ctx.api, ctx.chat!.id, drawn, L);
   } catch (imgErr) {
     console.error("Image send error:", imgErr);
   }
 
   try {
-    const safety = checkSafety(question);
+    const safety = checkSafety(question, L);
     const sensitive = safety.safe ? safety.sensitive : false;
     const interpretation = await withChatAction(ctx, "typing", () =>
-      getInterpretation(readingCtx, sensitive)
+      getInterpretation(readingCtx, sensitive, L)
     );
 
     state.lastInterpretation = interpretation;
@@ -600,25 +608,22 @@ async function doReading(ctx: Context, state: UserState) {
     }
 
     const afterKb = new InlineKeyboard()
-      .text("🎙 Озвучить расклад — ⭐ 1", "voice_reading")
+      .text(t("btn.voice_reading", L), "voice_reading")
       .row()
-      .text("🔮 Новый расклад", "new_reading")
+      .text(t("btn.new_reading", L), "new_reading")
       .row()
-      .text("🃏 Сменить расклад", "change_spread")
+      .text(t("btn.change_spread", L), "change_spread")
       .row()
-      .text("✏️ Изменить вопрос", "change_question");
+      .text(t("btn.change_question", L), "change_question");
 
-    await ctx.reply(interpretation + DISCLAIMER, {
+    await ctx.reply(interpretation + DISCLAIMER(L), {
       reply_markup: afterKb,
     });
 
     state.phase = "idle";
   } catch (err) {
     console.error("LLM error:", err);
-    await ctx.reply(
-      "🌑 <i>Карты молчат...</i> Что-то пошло не так. Попробуй чуть позже.",
-      { parse_mode: "HTML" }
-    );
+    await ctx.reply(t("reading.llm_error", L), { parse_mode: "HTML" });
     state.phase = "idle";
   }
 }
@@ -628,8 +633,9 @@ bot.callbackQuery("voice_reading", async (ctx) => {
   await ctx.answerCallbackQuery();
   const state = getState(ctx.chat!.id);
 
+  const L = getLang(ctx);
   if (!state.lastInterpretation) {
-    await ctx.reply("🌑 <i>Нечего озвучивать — сначала сделай расклад.</i>", { parse_mode: "HTML" });
+    await ctx.reply(t("voice.no_reading", L), { parse_mode: "HTML" });
     return;
   }
 
@@ -637,43 +643,37 @@ bot.callbackQuery("voice_reading", async (ctx) => {
 
   await ctx.api.sendInvoice(
     ctx.chat!.id,
-    "🎙 Озвучить расклад",
-    "Голосовое сообщение с трактовкой карт",
+    t("voice.invoice_title", L),
+    t("voice.invoice_desc", L),
     "pay:voice",
     "XTR",
-    [{ label: "Озвучка расклада", amount: 1 }],
+    [{ label: t("voice.invoice_label", L), amount: 1 }],
     { provider_token: "" }
   );
 
-  const cancelKb = new InlineKeyboard().text("❌ Отменить", "cancel_payment");
-  await ctx.reply(
-    "⭐ Оплати <b>1 Star</b> выше — и я озвучу расклад приятным голосом.\n\n" +
-    "💡 <i>Убедись, что в настройках Telegram разрешены голосовые сообщения от всех, иначе озвучка не дойдёт.</i>",
-    { parse_mode: "HTML", reply_markup: cancelKb }
-  );
+  const cancelKb = new InlineKeyboard().text(t("btn.cancel", L), "cancel_payment");
+  await ctx.reply(t("voice.pay_prompt", L), { parse_mode: "HTML", reply_markup: cancelKb });
 });
 
 // ── Карта дня ───────────────────────────────────────────────────────────────
 bot.command("daily", async (ctx) => {
   upsertUser(ctx.from!.id, ctx.from?.username, ctx.from?.first_name, ctx.from?.language_code);
+  const L = getLang(ctx);
 
   if (isDailySubscribed(ctx.from!.id)) {
     const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
     if (today && !today.revealed) {
       const kb = new InlineKeyboard()
-        .text("🔮 Раскрыть карту дня — ⭐ 1", "reveal_daily")
+        .text(t("btn.reveal_daily", L), "reveal_daily")
         .row()
-        .text("🔕 Отписаться от карты дня", "unsub_daily");
-      await ctx.reply(
-        "🌅 <i>Твоя карта дня уже ждёт!</i> Нажми кнопку, чтобы раскрыть.",
-        { parse_mode: "HTML", reply_markup: kb }
-      );
+        .text(t("btn.unsub_daily", L), "unsub_daily");
+      await ctx.reply(t("daily.waiting", L), { parse_mode: "HTML", reply_markup: kb });
       return;
     }
     if (today && today.revealed) {
       await ctx.reply(
-        "✨ <i>Ты уже раскрыл(а) карту дня сегодня.</i> Приходи завтра за новой!",
-        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+        t("daily.already_today", L),
+        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text(t("btn.begin_reading", L), "begin_reading") }
       );
       return;
     }
@@ -683,36 +683,29 @@ bot.command("daily", async (ctx) => {
   }
 
   subscribeDailyCard(ctx.from!.id);
-  await ctx.reply(
-    "🌅 <b>Ты подписан(а) на карту дня!</b>\n\n" +
-      "Каждое утро тебя будет ждать таинственная карта. " +
-      "<i>Раскрой её — и узнай послание дня.</i> ✨",
-    { parse_mode: "HTML" }
-  );
+  await ctx.reply(t("daily.subscribed", L), { parse_mode: "HTML" });
   await sendDailyToUser(bot, ctx.from!.id);
 });
 
 bot.callbackQuery("toggle_daily", async (ctx) => {
   await ctx.answerCallbackQuery();
   upsertUser(ctx.from!.id, ctx.from?.username, ctx.from?.first_name, ctx.from?.language_code);
+  const L = getLang(ctx);
 
   if (isDailySubscribed(ctx.from!.id)) {
     const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
     if (today && !today.revealed) {
       const kb = new InlineKeyboard()
-        .text("🔮 Раскрыть карту дня — ⭐ 1", "reveal_daily")
+        .text(t("btn.reveal_daily", L), "reveal_daily")
         .row()
-        .text("🔕 Отписаться от карты дня", "unsub_daily");
-      await ctx.reply(
-        "🌅 <i>Твоя карта дня уже ждёт!</i>",
-        { parse_mode: "HTML", reply_markup: kb }
-      );
+        .text(t("btn.unsub_daily", L), "unsub_daily");
+      await ctx.reply(t("daily.waiting_short", L), { parse_mode: "HTML", reply_markup: kb });
       return;
     }
     if (today && today.revealed) {
       await ctx.reply(
-        "✨ <i>Ты уже раскрыл(а) карту дня.</i> Завтра будет новая!",
-        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+        t("daily.already_revealed", L),
+        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text(t("btn.begin_reading", L), "begin_reading") }
       );
       return;
     }
@@ -721,29 +714,26 @@ bot.callbackQuery("toggle_daily", async (ctx) => {
   }
 
   subscribeDailyCard(ctx.from!.id);
-  await ctx.reply(
-    "🌅 <b>Ты подписан(а) на карту дня!</b>\n" +
-      "<i>Каждое утро тебя будет ждать таинственная карта.</i> ✨",
-    { parse_mode: "HTML" }
-  );
+  await ctx.reply(t("daily.subscribed_short", L), { parse_mode: "HTML" });
   await sendDailyToUser(bot, ctx.from!.id);
 });
 
 bot.callbackQuery("reveal_daily", async (ctx) => {
   await ctx.answerCallbackQuery();
   const state = getState(ctx.chat!.id);
+  const L = getLang(ctx);
 
   const today = getTodayDailyCard(ctx.from!.id, todayDateStr());
   if (!today) {
-    await ctx.reply("🌑 <i>Карта дня ещё не выбрана.</i> Напиши /daily", { parse_mode: "HTML" });
+    await ctx.reply(t("daily.not_chosen", L), { parse_mode: "HTML" });
     return;
   }
   if (today.revealed) {
     const card = getCardById(today.card_id);
     if (card) {
       await ctx.reply(
-        `✨ Ты уже раскрыл(а) карту дня: <b>${card.name_ru}</b>`,
-        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+        t("daily.already_revealed_card", L, { name: getCardName(card, L) }),
+        { parse_mode: "HTML", reply_markup: new InlineKeyboard().text(t("btn.begin_reading", L), "begin_reading") }
       );
     }
     return;
@@ -753,27 +743,25 @@ bot.callbackQuery("reveal_daily", async (ctx) => {
   state.phase = "awaiting_payment";
   await ctx.api.sendInvoice(
     ctx.chat!.id,
-    "🔮 Раскрыть карту дня",
-    "Узнай, какую карту выбрала для тебя Вселенная сегодня",
+    t("daily.reveal_title", L),
+    t("daily.reveal_desc", L),
     "pay:daily",
     "XTR",
-    [{ label: "Карта дня", amount: 1 }],
+    [{ label: t("daily.reveal_label", L), amount: 1 }],
     { provider_token: "" }
   );
 
-  const cancelKb = new InlineKeyboard().text("❌ Отменить", "cancel_payment");
-  await ctx.reply(
-    "⭐ Оплати <b>1 Star</b> — и карта раскроется.",
-    { parse_mode: "HTML", reply_markup: cancelKb }
-  );
+  const cancelKb = new InlineKeyboard().text(t("btn.cancel", L), "cancel_payment");
+  await ctx.reply(t("daily.reveal_pay", L), { parse_mode: "HTML", reply_markup: cancelKb });
 });
 
 bot.callbackQuery("unsub_daily", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const L = getLang(ctx);
   unsubscribeDailyCard(ctx.from!.id);
   await ctx.reply(
-    "🔕 <i>Ты отписан(а) от карты дня.</i> Чтобы подписаться снова — напиши /daily",
-    { parse_mode: "HTML", reply_markup: new InlineKeyboard().text("🔮 Начать расклад", "begin_reading") }
+    t("daily.unsubscribed", L),
+    { parse_mode: "HTML", reply_markup: new InlineKeyboard().text(t("btn.begin_reading", L), "begin_reading") }
   );
 });
 

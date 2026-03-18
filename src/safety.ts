@@ -1,4 +1,7 @@
+import { t, Lang } from "./i18n";
+
 const CRISIS_PATTERNS = [
+  // RU
   /суицид/i,
   /самоубийств/i,
   /покончить с собой/i,
@@ -16,10 +19,27 @@ const CRISIS_PATTERNS = [
   /наглотаться таблеток/i,
   /самоповрежд/i,
   /селфхарм/i,
+  // UK
+  /суїцид/i,
+  /самогубств/i,
+  /хочу померти/i,
+  /не хочу жити/i,
+  /вбити себе/i,
+  /повіситися/i,
+  /порізати вени/i,
+  // EN
   /self.?harm/i,
+  /kill myself/i,
+  /want to die/i,
+  /end my life/i,
+  /suicide/i,
+  /don'?t want to live/i,
+  /cut myself/i,
+  /hang myself/i,
 ];
 
 const SENSITIVE_PATTERNS = [
+  // RU
   /диагноз/i,
   /лечение/i,
   /лекарств/i,
@@ -32,34 +52,31 @@ const SENSITIVE_PATTERNS = [
   /вложить деньги/i,
   /кредит/i,
   /ипотек/i,
+  // UK
+  /діагноз/i,
+  /лікування/i,
+  /адвокат/i,
+  /інвестиц/i,
+  // EN
+  /diagnosis/i,
+  /treatment/i,
+  /medication/i,
+  /lawyer/i,
+  /invest/i,
+  /mortgage/i,
+  /credit/i,
 ];
 
 export type SafetyResult =
   | { safe: true; sensitive: boolean }
   | { safe: false; message: string };
 
-export function checkSafety(question: string): SafetyResult {
+export function checkSafety(question: string, lang: Lang = "ru"): SafetyResult {
   for (const pat of CRISIS_PATTERNS) {
     if (pat.test(question)) {
       return {
         safe: false,
-        message:
-          "<b>Я чувствую, что тебе сейчас может быть очень тяжело.</b>\n" +
-          "Карты здесь бессильны — но живые люди могут помочь. " +
-          "Пожалуйста, обратись к близким или на линию помощи.\n\n" +
-          "🇷🇺 <b>Россия</b>\n" +
-          "  Телефон доверия: <code>8-800-2000-122</code> (бесплатно, 24/7)\n" +
-          "  Центр экстренной психологической помощи МЧС: <code>+7 (495) 989-50-50</code>\n\n" +
-          "🇺🇦 <b>Україна</b>\n" +
-          "  Лайфлайн Україна: <code>7333</code> (з мобільного, безкоштовно)\n" +
-          "  Гаряча лінія: <code>0-800-500-335</code>\n\n" +
-          "🇧🇾 <b>Беларусь</b>\n" +
-          "  Телефон доверия: <code>8-017-352-44-44</code>\n" +
-          "  Для детей и подростков: <code>8-801-100-16-11</code>\n\n" +
-          "🇰🇿 <b>Қазақстан</b>\n" +
-          "  Телефон доверия: <code>150</code> (бесплатно, 24/7)\n" +
-          "  Линия помощи: <code>+7 (717) 270-41-00</code>\n\n" +
-          "<i>Ты не один(а). Помощь доступна прямо сейчас</i> 💙",
+        message: t("safety.crisis", lang),
       };
     }
   }

@@ -2,25 +2,43 @@
   {
     "id": "whisper",
     "name": "Шёпот карты",
+    "name_uk": "Шепіт карти",
+    "name_en": "Card Whisper",
     "count": 1,
     "positions": ["Суть / Совет"],
+    "positions_uk": ["Суть / Порада"],
+    "positions_en": ["Essence / Advice"],
     "price": 1,
-    "description": "Одна карта — мгновенный отклик на твой вопрос. Суть момента, короткий совет. Подходит, когда нужен быстрый взгляд со стороны."
+    "description": "Одна карта — мгновенный отклик на твой вопрос. Суть момента, короткий совет. Подходит, когда нужен быстрый взгляд со стороны.",
+    "description_uk": "Одна карта — миттєвий відгук на твоє питання. Суть моменту, коротка порада. Підходить, коли потрібен швидкий погляд збоку.",
+    "description_en": "One card — an instant response to your question. The essence of the moment, a quick piece of advice. Perfect when you need a brief outside perspective."
   },
   {
     "id": "triangle",
     "name": "Треугольник судьбы",
+    "name_uk": "Трикутник долі",
+    "name_en": "Triangle of Fate",
     "count": 3,
     "positions": ["Прошлое", "Настоящее", "Будущее"],
+    "positions_uk": ["Минуле", "Сьогодення", "Майбутнє"],
+    "positions_en": ["Past", "Present", "Future"],
     "price": 2,
-    "description": "Три карты раскрывают линию твоей ситуации: откуда ты пришёл, где находишься сейчас и куда ведёт течение событий."
+    "description": "Три карты раскрывают линию твоей ситуации: откуда ты пришёл, где находишься сейчас и куда ведёт течение событий.",
+    "description_uk": "Три карти розкривають лінію твоєї ситуації: звідки ти прийшов, де перебуваєш зараз і куди веде плин подій.",
+    "description_en": "Three cards reveal the arc of your situation: where you came from, where you are now, and where the flow of events is leading."
   },
   {
     "id": "mirror",
     "name": "Зеркало глубин",
+    "name_uk": "Дзеркало глибин",
+    "name_en": "Mirror of Depths",
     "count": 5,
     "positions": ["Ситуация", "Препятствие", "Подсознание", "Совет", "Итог"],
+    "positions_uk": ["Ситуація", "Перешкода", "Підсвідомість", "Порада", "Підсумок"],
+    "positions_en": ["Situation", "Obstacle", "Subconscious", "Advice", "Outcome"],
     "price": 3,
-    "description": "Пять карт для глубокой проработки. Карты покажут не только внешнюю ситуацию, но и скрытые влияния подсознания, дадут конкретный совет и обозначат вероятный итог."
+    "description": "Пять карт для глубокой проработки. Карты покажут не только внешнюю ситуацию, но и скрытые влияния подсознания, дадут конкретный совет и обозначат вероятный итог.",
+    "description_uk": "П'ять карт для глибокого опрацювання. Карти покажуть не лише зовнішню ситуацію, а й приховані впливи підсвідомості, дадуть конкретну пораду та окреслять ймовірний підсумок.",
+    "description_en": "Five cards for deep exploration. The cards will reveal not only the external situation but also hidden subconscious influences, offer specific advice, and outline the likely outcome."
   }
 ]

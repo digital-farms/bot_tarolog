@@ -1,9 +1,13 @@
 import { readFileSync, writeFileSync, renameSync } from "fs";
 import { join } from "path";
 
+import type { Lang } from "../i18n";
+
 export interface Card {
   id: number;
   name_ru: string;
+  name_uk?: string;
+  name_en?: string;
   arcana: "major" | "minor";
   suit: string | null;
   rank: number;
@@ -14,6 +18,12 @@ export interface Card {
   image_path: string;
   tg_file_id: string | null;
   tg_file_unique_id: string | null;
+}
+
+export function getCardName(card: Card, lang: Lang): string {
+  if (lang === "uk" && card.name_uk) return card.name_uk;
+  if (lang === "en" && card.name_en) return card.name_en;
+  return card.name_ru;
 }
 
 const DATA_PATH = join(__dirname, "..", "..", "data", "cards.json");

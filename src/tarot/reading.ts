@@ -1,5 +1,7 @@
 import { DrawnCard } from "./deck";
 import { Spread } from "./spreads";
+import { getCardName } from "./cards";
+import { t, Lang } from "../i18n";
 
 export interface ReadingContext {
   question: string;
@@ -16,14 +18,15 @@ export interface ReadingContext {
 export function buildReadingContext(
   question: string,
   spread: Spread,
-  drawn: DrawnCard[]
+  drawn: DrawnCard[],
+  lang: Lang = "ru"
 ): ReadingContext {
   const positions = spread.positions.map((pos, i) => {
     const d = drawn[i];
     const reversed = d.reversed;
     return {
       position: pos,
-      cardName: d.card.name_ru,
+      cardName: getCardName(d.card, lang),
       reversed,
       keywords: reversed
         ? d.card.keywords_reversed
@@ -37,9 +40,9 @@ export function buildReadingContext(
   return { question, spread, positions };
 }
 
-export function formatCardsMessage(ctx: ReadingContext): string {
+export function formatCardsMessage(ctx: ReadingContext, lang: Lang = "ru"): string {
   const lines = ctx.positions.map((p) => {
-    const orient = p.reversed ? "перевёрнутая" : "прямая";
+    const orient = t(p.reversed ? "common.reversed" : "common.upright", lang);
     return `<b>${p.position}</b>: <i>${p.cardName}</i> (${orient})`;
   });
   return lines.join("\n");

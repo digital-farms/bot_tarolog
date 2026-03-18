@@ -9,6 +9,7 @@ import {
   getTodayDailyCard,
   getCachedFileId,
 } from "./db";
+import { t, getUserLang } from "./i18n";
 
 const RUBASHKA_PATH = join(__dirname, "..", "data", "images", "rubashka__obratnaya_storona_igralnoy_karti.jpg");
 
@@ -36,11 +37,12 @@ async function sendDailyToUser(bot: Bot, userTgId: number): Promise<void> {
   if (existing?.revealed) return;
 
   const { InlineKeyboard } = await import("grammy");
+  const L = getUserLang(userTgId);
 
   const kb = new InlineKeyboard()
-    .text("🔮 Раскрыть карту дня — ⭐ 1", "reveal_daily")
+    .text(t("btn.reveal_daily", L), "reveal_daily")
     .row()
-    .text("🔕 Отписаться от карты дня", "unsub_daily");
+    .text(t("btn.unsub_daily", L), "unsub_daily");
 
   try {
     const cached = getCachedFileId(-1);
@@ -49,10 +51,7 @@ async function sendDailyToUser(bot: Bot, userTgId: number): Promise<void> {
       : new InputFile(RUBASHKA_PATH, "card_back.jpg");
 
     await bot.api.sendPhoto(userTgId, photo, {
-      caption:
-        "🌅 <b>Доброе утро!</b>\n\n" +
-        "Карты уже выбрали послание для тебя на сегодня...\n" +
-        "Таинственная карта ждёт — <i>готов(а) узнать, что она скрывает?</i> ✨",
+      caption: t("daily.morning", L),
       parse_mode: "HTML",
       reply_markup: kb,
     });

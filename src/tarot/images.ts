@@ -2,9 +2,10 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { InputFile, InputMediaBuilder } from "grammy";
 import type { Api } from "grammy";
-import { Card } from "./cards";
+import { Card, getCardName } from "./cards";
 import type { DrawnCard } from "./deck";
 import { getCachedFileId, upsertCardCache } from "../db";
+import { t, Lang } from "../i18n";
 
 const PROJECT_ROOT = join(__dirname, "..", "..");
 
@@ -31,7 +32,8 @@ function isAlreadyCached(cardId: number): boolean {
 export async function sendCardsMediaGroup(
   api: Api,
   chatId: number,
-  drawn: DrawnCard[]
+  drawn: DrawnCard[],
+  lang: Lang = "ru"
 ): Promise<void> {
   const validDrawn: DrawnCard[] = [];
   for (const d of drawn) {
@@ -42,9 +44,9 @@ export async function sendCardsMediaGroup(
   if (validDrawn.length === 1) {
     const d = validDrawn[0];
     const src = getPhotoSource(d.card)!;
-    const orient = d.reversed ? "перевёрнутая" : "прямая";
+    const orient = t(d.reversed ? "common.reversed" : "common.upright", lang);
     const result = await api.sendPhoto(chatId, src, {
-      caption: `🃏 ${d.card.name_ru} (${orient})`,
+      caption: `🃏 ${getCardName(d.card, lang)} (${orient})`,
     });
     if (!isAlreadyCached(d.card.id) && result.photo?.length) {
       const biggest = result.photo[result.photo.length - 1];
@@ -55,9 +57,9 @@ export async function sendCardsMediaGroup(
 
   const media = validDrawn.map((d) => {
     const src = getPhotoSource(d.card)!;
-    const orient = d.reversed ? "перевёрнутая" : "прямая";
+    const orient = t(d.reversed ? "common.reversed" : "common.upright", lang);
     return InputMediaBuilder.photo(src, {
-      caption: `🃏 ${d.card.name_ru} (${orient})`,
+      caption: `🃏 ${getCardName(d.card, lang)} (${orient})`,
     });
   });
 

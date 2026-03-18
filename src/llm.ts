@@ -1,4 +1,5 @@
 import { ReadingContext } from "./tarot/reading";
+import { t, Lang } from "./i18n";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -8,48 +9,33 @@ function getEnv(key: string): string {
   return val;
 }
 
-function buildPrompt(ctx: ReadingContext, sensitive: boolean): string {
+function buildPrompt(ctx: ReadingContext, sensitive: boolean, lang: Lang = "ru"): string {
   const cardsBlock = ctx.positions
     .map((p) => {
-      const orient = p.reversed ? "перевёрнутая" : "прямая";
+      const orient = t(p.reversed ? "common.reversed" : "common.upright", lang);
       return [
-        `Позиция: ${p.position}`,
-        `Карта: ${p.cardName} (${orient})`,
-        `Ключевые слова: ${p.keywords.join(", ")}`,
-        `Краткое значение: ${p.shortMeaning}`,
+        `${t("llm.position_label", lang)}: ${p.position}`,
+        `${t("llm.card_label", lang)}: ${p.cardName} (${orient})`,
+        `${t("llm.keywords_label", lang)}: ${p.keywords.join(", ")}`,
+        `${t("llm.meaning_label", lang)}: ${p.shortMeaning}`,
       ].join("\n");
     })
     .join("\n\n");
 
-  const sensitiveNote = sensitive
-    ? "\nВАЖНО: вопрос касается медицины/юридических/финансовых тем. Дай нейтральную трактовку без категоричных инструкций, мягко порекомендуй обратиться к профильному специалисту."
-    : "";
+  const sensitiveNote = sensitive ? t("llm.sensitive_note", lang) : "";
 
-  return `Ты — опытный таролог с многолетней практикой. Говори от лица карт, используй образный, мистический, но тёплый язык. Обращайся на "ты". Используй обороты вроде "карты шепчут...", "энергия расклада указывает...", "в этой позиции раскрывается...". Не будь сухим справочником — будь проводником.
-
-Вопрос обратившегося: "${ctx.question}"
-Расклад: ${ctx.spread.name}
-
-Выпавшие карты:
-${cardsBlock}
-${sensitiveNote}
-
-Структура ответа:
-1. Трактовка по каждой позиции (1–3 абзаца в зависимости от количества карт). Описывай образно, что карта "говорит" в этой позиции, как она связана с вопросом.
-2. Общий вывод — объедини послание карт в целостную картину.
-3. 2–4 мягких практических шага для саморефлексии. Формулируй как приглашение, не как инструкцию ("попробуй обратить внимание на...", "позволь себе...").
-
-Правила:
-- Объём: 900–1400 символов.
-- Никакой разметки: ни HTML, ни markdown (**, ##, - и т.д.). Только чистый текст с переносами строк.
-- Можно 1–2 эмоджи в самом начале ответа.
-- Пиши на русском.
-- Тон: мистичный, тёплый, без категоричности. Это зеркало для саморефлексии, не приговор судьбы.`;
+  return t("llm.prompt", lang, {
+    question: ctx.question,
+    spread_name: ctx.spread.name,
+    cards_block: cardsBlock,
+    sensitive_note: sensitiveNote,
+  });
 }
 
 export async function getInterpretation(
   ctx: ReadingContext,
-  sensitive: boolean
+  sensitive: boolean,
+  lang: Lang = "ru"
 ): Promise<string> {
   const apiKey = getEnv("OPENROUTER_API_KEY");
   const model = process.env["OPENROUTER_MODEL"] || "openai/gpt-4o-mini";
@@ -59,7 +45,7 @@ export async function getInterpretation(
     messages: [
       {
         role: "user" as const,
-        content: buildPrompt(ctx, sensitive),
+        content: buildPrompt(ctx, sensitive, lang),
       },
     ],
     max_tokens: 1536,
