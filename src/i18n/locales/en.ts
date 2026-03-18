@@ -107,6 +107,23 @@ const locale: Record<string, string> = {
   "daily.card_caption": "🌅 <b>Your daily card: {name}</b> ({orient})\n\n✨ <i>{meaning}</i>\n\n🔑 {keywords}",
   "daily.ask_card_question": "🕯 <b>Ask this card a question</b> — <i>and it will reveal its whisper to you.</i>",
 
+  // ── Profile ────────────────────────────────────────────────────────────────
+  "profile.title": "🔮 <b>Your profile, {name}</b>",
+  "profile.stats": "📊 Readings: <b>{readings}</b>\n⭐ Stars spent: <b>{stars}</b>\n🃏 Free readings left: <b>{free}</b>\n📅 With us since: <b>{since}</b>",
+  "profile.daily_on": "subscribed ✅",
+  "profile.daily_off": "not subscribed",
+  "profile.lang_ru": "Русский 🇷🇺",
+  "profile.lang_uk": "Українська 🇺🇦",
+  "profile.lang_en": "English 🇬🇧",
+  "btn.profile": "👤 Profile",
+  "btn.history": "📜 History",
+  "btn.daily_card": "🌅 Daily card",
+  "btn.change_lang": "🌍 Language",
+  "history.title": "📜 <b>Recent readings</b>",
+  "history.empty": "📜 <i>You have no readings yet.</i> Start your first one! 🔮",
+  "history.item": "<b>{n}.</b> {spread} — <i>{question}</i>\n🕐 {date}",
+  "history.back": "👤 Back to profile",
+
   // ── Safety ──────────────────────────────────────────────────────────────────
   "safety.crisis": "<b>I sense that you may be going through a very difficult time right now.</b>\nThe cards cannot help here — but real people can. Please reach out to someone you trust or a helpline.\n\n🇬🇧 <b>UK</b>\n  Samaritans: <code>116 123</code> (free, 24/7)\n  Crisis Text Line: text <code>SHOUT</code> to <code>85258</code>\n\n🇺🇸 <b>USA</b>\n  National Suicide Prevention: <code>988</code> (call or text, 24/7)\n  Crisis Text Line: text <code>HOME</code> to <code>741741</code>\n\n🇺🇦 <b>Україна</b>\n  Лайфлайн Україна: <code>7333</code>\n  Гаряча лінія: <code>0-800-500-335</code>\n\n🇷🇺 <b>Россия</b>\n  Телефон доверия: <code>8-800-2000-122</code>\n\n<i>You are not alone. Help is available right now</i> 💙",
 

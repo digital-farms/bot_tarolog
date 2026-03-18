@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { existsSync } from "fs";
 import { join } from "path";
-import { Bot, InlineKeyboard, Context, InputFile } from "grammy";
+import { Bot, InlineKeyboard, Keyboard, Context, InputFile } from "grammy";
 import { Spread, getAllSpreads, getSpreadById, getLocalizedSpread } from "./tarot/spreads";
 import { drawCards } from "./tarot/deck";
 import { buildReadingContext, formatCardsMessage } from "./tarot/reading";
@@ -17,6 +17,7 @@ import {
   subscribeDailyCard, unsubscribeDailyCard, isDailySubscribed,
   getTodayDailyCard, revealDailyCard,
   getFreeReadings, decrementFreeReading,
+  getUserProfile, getLastReadings,
 } from "./db";
 import { startDailyCron, sendDailyToUser, todayDateStr } from "./daily";
 import { startAdmin } from "./admin";
@@ -127,11 +128,17 @@ bot.callbackQuery(/^set_lang:/, async (ctx) => {
     await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   } catch (_) {}
 
+  // Устанавливаем постоянную reply-клавиатуру «Профиль»
+  await ctx.reply(
+    t("lang.set", lang),
+    { parse_mode: "HTML", reply_markup: persistentKeyboard(lang) }
+  );
+
   const kb = new InlineKeyboard()
     .text(t("btn.begin_reading", lang), "begin_reading");
 
   await ctx.reply(
-    t("lang.set", lang) + "\n\n" + t("start.welcome", lang),
+    t("start.welcome", lang),
     { parse_mode: "HTML", reply_markup: kb }
   );
 });
@@ -146,6 +153,99 @@ bot.callbackQuery("begin_reading", async (ctx) => {
 
   const L = getLang(ctx);
   await ctx.reply(t("start.ask_question", L), { parse_mode: "HTML" });
+});
+
+// ── Профиль пользователя ─────────────────────────────────────────────────────
+
+function profileKeyboard(lang: Lang): InlineKeyboard {
+  return new InlineKeyboard()
+    .text(t("btn.begin_reading", lang), "begin_reading")
+    .text(t("btn.history", lang), "history")
+    .row()
+    .text(t("btn.change_lang", lang), "profile_lang")
+    ;
+}
+
+function persistentKeyboard(lang: Lang): Keyboard {
+  return new Keyboard()
+    .text(t("btn.profile", lang))
+    .resized()
+    .persistent();
+}
+
+async function sendProfile(ctx: Context) {
+  const L = getLang(ctx);
+  const tgId = ctx.from!.id;
+  const profile = getUserProfile(tgId);
+  if (!profile) return;
+
+  const since = profile.created_at.slice(0, 10).split("-").reverse().join(".");
+
+  const text = t("profile.title", L, { name: profile.first_name || profile.username || "—" })
+    + "\n\n"
+    + t("profile.stats", L, {
+        readings: profile.total_readings,
+        stars: profile.total_stars,
+        free: profile.free_readings_left,
+        since,
+      });
+
+  await ctx.reply(text, { parse_mode: "HTML", reply_markup: profileKeyboard(L) });
+}
+
+bot.command("profile", async (ctx) => {
+  await sendProfile(ctx);
+});
+
+bot.callbackQuery("show_profile", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await sendProfile(ctx);
+});
+
+// ── История раскладов ────────────────────────────────────────────────────────
+bot.callbackQuery("history", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const L = getLang(ctx);
+  const readings = getLastReadings(ctx.from!.id, 5);
+
+  if (readings.length === 0) {
+    const kb = new InlineKeyboard()
+      .text(t("btn.begin_reading", L), "begin_reading")
+      .row()
+      .text(t("history.back", L), "show_profile");
+    await ctx.reply(t("history.empty", L), { parse_mode: "HTML", reply_markup: kb });
+    return;
+  }
+
+  const lines = readings.map((r, i) => {
+    const spreadObj = getSpreadById(r.spread_id);
+    const ls = spreadObj ? getLocalizedSpread(spreadObj, L) : null;
+    const spreadName = ls?.name || r.spread_id;
+    const question = r.question.length > 50 ? r.question.slice(0, 47) + "…" : r.question;
+    const date = r.created_at.slice(0, 16).replace("T", " ");
+    return t("history.item", L, { n: i + 1, spread: spreadName, question, date });
+  });
+
+  const kb = new InlineKeyboard()
+    .text(t("btn.new_reading", L), "begin_reading")
+    .row()
+    .text(t("history.back", L), "show_profile");
+
+  await ctx.reply(
+    t("history.title", L) + "\n\n" + lines.join("\n\n"),
+    { parse_mode: "HTML", reply_markup: kb }
+  );
+});
+
+// ── Смена языка из профиля ───────────────────────────────────────────────────
+bot.callbackQuery("profile_lang", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const langKb = new InlineKeyboard()
+    .text("🇺🇦 Українська", "set_lang:uk")
+    .text("🇬🇧 English", "set_lang:en")
+    .text("🇷🇺 Русский", "set_lang:ru");
+  const L = getLang(ctx);
+  await ctx.reply(t("lang.choose", L), { parse_mode: "HTML", reply_markup: langKb });
 });
 
 // ── Выбор расклада (inline keyboard) ────────────────────────────────────────
@@ -467,9 +567,17 @@ bot.callbackQuery("change_question", async (ctx) => {
 });
 
 // ── Текстовое сообщение ────────────────────────────────────────────────────
+const PROFILE_BUTTONS = new Set(["👤 Профиль", "👤 Профіль", "👤 Profile"]);
+
 bot.on("message:text", async (ctx) => {
   const text = ctx.message.text.trim();
   if (!text || text.startsWith("/")) return;
+
+  // Постоянная кнопка «Профиль»
+  if (PROFILE_BUTTONS.has(text)) {
+    await sendProfile(ctx);
+    return;
+  }
 
   const state = getState(ctx.chat.id);
 

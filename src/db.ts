@@ -193,6 +193,38 @@ export function getLastReadings(userTgId: number, limit = 10): ReadingRow[] {
     .all(userTgId, limit) as ReadingRow[];
 }
 
+// ── Profile stats ──────────────────────────────────────────────────────────
+
+export interface UserProfile {
+  tg_id: number;
+  username: string | null;
+  first_name: string | null;
+  language: string;
+  created_at: string;
+  free_readings_left: number;
+  total_readings: number;
+  total_stars: number;
+}
+
+export function getUserProfile(tgId: number): UserProfile | null {
+  const row = getDb()
+    .prepare(`
+      SELECT
+        u.tg_id,
+        u.username,
+        u.first_name,
+        u.language,
+        u.created_at,
+        u.free_readings_left,
+        (SELECT COUNT(*) FROM readings WHERE user_tg_id = u.tg_id) AS total_readings,
+        (SELECT COALESCE(SUM(amount_stars), 0) FROM payments WHERE user_tg_id = u.tg_id) AS total_stars
+      FROM users u
+      WHERE u.tg_id = ?
+    `)
+    .get(tgId) as UserProfile | undefined;
+  return row ?? null;
+}
+
 // ── Payments ────────────────────────────────────────────────────────────────
 
 export function savePayment(
