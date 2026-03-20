@@ -124,6 +124,34 @@ const locale: Record<string, string> = {
   "history.item": "<b>{n}.</b> {spread} — <i>{question}</i>\n🕐 {date}",
   "history.back": "👤 Back to profile",
 
+  // ── Levels ─────────────────────────────────────────────────────────────────
+  "level.neophyte": "Neophyte",
+  "level.seeker": "Seeker",
+  "level.adept": "Adept",
+  "level.mystic": "Mystic",
+  "level.master": "Master",
+  "level.oracle": "Oracle",
+  "level.profile": "{emoji} <b>{name}</b>\n{bar}",
+  "level.up": "🎉 <b>Congratulations!</b> You've reached the level <b>{emoji} {name}</b>!\n\n🎁 Bonus: <b>+{bonus}</b> free readings",
+
+  // ── Referrals ─────────────────────────────────────────────────────────────
+  "btn.invite": "👥 Invite a friend",
+  "referral.invite_text": "👥 <b>Invite a friend</b> — and get <b>+1 free reading</b> when they make their first payment!\n\nYour link:\n<code>{link}</code>",
+  "referral.profile_stat": "👥 Friends invited: <b>{count}</b>",
+  "referral.reward_to_referrer": "🎁 Your friend <b>{name}</b> made their first payment! You get <b>+1 free reading</b>. Thanks for sharing the magic! ✨",
+  "referral.welcome_referred": "✨ A friend invited you! Welcome to the world of Tarot.",
+
+  // ── Clarify card ──────────────────────────────────────────────────────────
+  "btn.clarify_card": "🔍 Clarifying card (⭐1)",
+  "clarify.choose_position": "🔍 Which position would you like to clarify?",
+  "clarify.drawing": "🔍 Drawing a clarifying card…",
+  "clarify.result": "🔍 <b>Clarifying card</b> for position <b>\"{position}\"</b>:\n\n{card} ({orient})",
+  "clarify.result_single": "🔍 <b>Clarifying card</b>:\n\n{card} ({orient})",
+  "clarify.limit_reached": "🔍 You've already used the maximum clarifying cards for this reading (2 of 2).",
+  "clarify.no_context": "🔍 No active reading to clarify. Start a new reading!",
+  "llm.clarify_prompt": "You are an experienced tarot reader. Give a brief clarification for the position \"{position}\" in the context of the question: \"{question}\"\n\nMain card in this position: {main_card}\nClarifying card: {clarify_card} ({orient})\n\nDescribe how the clarifying card complements and deepens the meaning of the main card. Speak vividly, mystically, warmly. Length: 400–700 characters. No markup (HTML, markdown).",
+  "llm.clarify_prompt_single": "You are an experienced tarot reader. Give a brief clarification for the reading in the context of the question: \"{question}\"\n\nMain card: {main_card}\nClarifying card: {clarify_card} ({orient})\n\nDescribe how the clarifying card complements and deepens the meaning of the main card. Speak vividly, mystically, warmly. Length: 400–700 characters. No markup (HTML, markdown).",
+
   // ── Safety ──────────────────────────────────────────────────────────────────
   "safety.crisis": "<b>I sense that you may be going through a very difficult time right now.</b>\nThe cards cannot help here — but real people can. Please reach out to someone you trust or a helpline.\n\n🇬🇧 <b>UK</b>\n  Samaritans: <code>116 123</code> (free, 24/7)\n  Crisis Text Line: text <code>SHOUT</code> to <code>85258</code>\n\n🇺🇸 <b>USA</b>\n  National Suicide Prevention: <code>988</code> (call or text, 24/7)\n  Crisis Text Line: text <code>HOME</code> to <code>741741</code>\n\n🇺🇦 <b>Україна</b>\n  Лайфлайн Україна: <code>7333</code>\n  Гаряча лінія: <code>0-800-500-335</code>\n\n🇷🇺 <b>Россия</b>\n  Телефон доверия: <code>8-800-2000-122</code>\n\n<i>You are not alone. Help is available right now</i> 💙",
 

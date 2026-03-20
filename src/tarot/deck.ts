@@ -21,3 +21,9 @@ export function drawCards(count: number): DrawnCard[] {
     reversed: Math.random() < 0.5,
   }));
 }
+
+export function drawOneExcluding(excludeIds: Set<number>): DrawnCard {
+  const available = getAllCards().filter(c => !excludeIds.has(c.id));
+  const shuffled = shuffle(available);
+  return { card: shuffled[0], reversed: Math.random() < 0.5 };
+}

@@ -3,10 +3,10 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { Bot, InlineKeyboard, Keyboard, Context, InputFile } from "grammy";
 import { Spread, getAllSpreads, getSpreadById, getLocalizedSpread } from "./tarot/spreads";
-import { drawCards } from "./tarot/deck";
+import { drawCards, drawOneExcluding } from "./tarot/deck";
 import { buildReadingContext, formatCardsMessage } from "./tarot/reading";
 import { checkSafety } from "./safety";
-import { getInterpretation } from "./llm";
+import { getInterpretation, getClarifyInterpretation } from "./llm";
 import { generateVoice } from "./tts";
 import { sendCardsMediaGroup } from "./tarot/images";
 import {
@@ -16,13 +16,15 @@ import {
   getCachedFileId, upsertCardCache,
   subscribeDailyCard, unsubscribeDailyCard, isDailySubscribed,
   getTodayDailyCard, revealDailyCard,
-  getFreeReadings, decrementFreeReading,
-  getUserProfile, getLastReadings,
+  getFreeReadings, decrementFreeReading, addFreeReadings,
+  getUserProfile, getLastReadings, getReadingsCount,
+  setReferrer, tryRewardReferrer, getReferralCount,
 } from "./db";
 import { startDailyCron, sendDailyToUser, todayDateStr } from "./daily";
 import { startAdmin } from "./admin";
 import { getCardById, getCardName } from "./tarot/cards";
 import { t, getUserLang, setUserLang, detectLang, Lang } from "./i18n";
+import { getLevel, getLevelName, checkLevelUp } from "./levels";
 
 const token = process.env["TELEGRAM_BOT_TOKEN"];
 if (!token) {
@@ -33,6 +35,20 @@ if (!token) {
 const bot = new Bot(token);
 
 type Phase = "idle" | "awaiting_question" | "awaiting_spread" | "confirming" | "awaiting_payment";
+
+interface DrawnCard {
+  card: { id: number; name_ru: string };
+  reversed: boolean;
+}
+
+interface ClarifyContext {
+  question: string;
+  spreadName: string;
+  positions: string[];
+  drawnCards: DrawnCard[];
+  usedCardIds: Set<number>;
+  clarifyCount: number; // max 2
+}
 
 interface UserState {
   phase: Phase;
@@ -46,6 +62,8 @@ interface UserState {
   dailyCardId?: number;
   dailyCardReversed?: boolean;
   lastPaymentChargeId?: string;
+  clarify?: ClarifyContext;
+  clarifyPositionIdx?: number; // chosen position for clarify
 }
 
 const sessions = new Map<number, UserState>();
@@ -97,6 +115,19 @@ bot.command("start", async (ctx) => {
     ctx.from?.language_code
   );
   subscribeDailyCard(ctx.from!.id);
+
+  // Handle referral link: /start ref_<tg_id>
+  const payload = ctx.match?.toString().trim();
+  if (payload && payload.startsWith("ref_")) {
+    const referrerId = parseInt(payload.slice(4), 10);
+    if (!isNaN(referrerId)) {
+      const wasSet = setReferrer(ctx.from!.id, referrerId);
+      if (wasSet) {
+        const refLang = detectLang(ctx.from?.language_code);
+        await ctx.reply(t("referral.welcome_referred", refLang), { parse_mode: "HTML" });
+      }
+    }
+  }
 
   // Auto-detect language for first-time users, then show chooser
   const detected = detectLang(ctx.from?.language_code);
@@ -162,6 +193,7 @@ function profileKeyboard(lang: Lang): InlineKeyboard {
     .text(t("btn.begin_reading", lang), "begin_reading")
     .text(t("btn.history", lang), "history")
     .row()
+    .text(t("btn.invite", lang), "referral_invite")
     .text(t("btn.change_lang", lang), "profile_lang")
     ;
 }
@@ -180,15 +212,27 @@ async function sendProfile(ctx: Context) {
   if (!profile) return;
 
   const since = profile.created_at.slice(0, 10).split("-").reverse().join(".");
+  const ul = getLevel(profile.total_readings);
+  const levelLine = t("level.profile", L, {
+    emoji: ul.level.emoji,
+    name: getLevelName(ul.level, L),
+    bar: ul.progress,
+  });
+
+  const refCount = getReferralCount(tgId);
 
   const text = t("profile.title", L, { name: profile.first_name || profile.username || "—" })
+    + "\n\n"
+    + levelLine
     + "\n\n"
     + t("profile.stats", L, {
         readings: profile.total_readings,
         stars: profile.total_stars,
         free: profile.free_readings_left,
         since,
-      });
+      })
+    + "\n"
+    + t("referral.profile_stat", L, { count: refCount });
 
   await ctx.reply(text, { parse_mode: "HTML", reply_markup: profileKeyboard(L) });
 }
@@ -200,6 +244,18 @@ bot.command("profile", async (ctx) => {
 bot.callbackQuery("show_profile", async (ctx) => {
   await ctx.answerCallbackQuery();
   await sendProfile(ctx);
+});
+
+bot.callbackQuery("referral_invite", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const L = getLang(ctx);
+  const botInfo = await ctx.api.getMe();
+  const link = `https://t.me/${botInfo.username}?start=ref_${ctx.from!.id}`;
+  const kb = new InlineKeyboard().text(t("history.back", L), "show_profile");
+  await ctx.reply(
+    t("referral.invite_text", L, { link }),
+    { parse_mode: "HTML", reply_markup: kb }
+  );
 });
 
 // ── История раскладов ────────────────────────────────────────────────────────
@@ -342,6 +398,22 @@ bot.on("message:successful_payment", async (ctx) => {
 
   if (!payload.startsWith("pay:")) return;
 
+  // Referral reward: first payment triggers bonus for referrer
+  const refResult = tryRewardReferrer(ctx.from!.id);
+  if (refResult) {
+    const refLang = getUserLang(refResult.referrerId);
+    const friendName = ctx.from?.first_name || ctx.from?.username || "—";
+    try {
+      await ctx.api.sendMessage(
+        refResult.referrerId,
+        t("referral.reward_to_referrer", refLang, { name: friendName }),
+        { parse_mode: "HTML" }
+      );
+    } catch (e) {
+      console.error("Failed to notify referrer:", e);
+    }
+  }
+
   const state = getState(ctx.chat.id);
 
   // ── Оплата озвучки ──
@@ -463,6 +535,19 @@ bot.on("message:successful_payment", async (ctx) => {
     state.phase = "awaiting_question";
 
     await ctx.reply(t("daily.ask_card_question", L), { parse_mode: "HTML" });
+    return;
+  }
+
+  // ── Оплата уточняющей карты ──
+  if (payload === "pay:clarify") {
+    savePayment(ctx.from!.id, payment.total_amount, payload, payment.telegram_payment_charge_id);
+    state.phase = "idle";
+    if (!state.clarify) {
+      const L = getLang(ctx);
+      await ctx.reply(t("clarify.no_context", L), { parse_mode: "HTML" });
+      return;
+    }
+    await doClarify(ctx, state);
     return;
   }
 
@@ -686,11 +771,34 @@ async function doReading(ctx: Context, state: UserState) {
   const readingCtx = buildReadingContext(question, { ...spread, name: ls.name, positions: ls.positions }, drawn, L);
   const cardsMsg = formatCardsMessage(readingCtx, L);
 
+  // Save clarify context for possible clarifying card
+  state.clarify = {
+    question,
+    spreadName: ls.name,
+    positions: ls.positions,
+    drawnCards: drawn.map(d => ({ card: { id: d.card.id, name_ru: d.card.name_ru }, reversed: d.reversed })),
+    usedCardIds: new Set(drawn.map(d => d.card.id)),
+    clarifyCount: 0,
+  };
+  state.clarifyPositionIdx = undefined;
+
   const cardsJson = JSON.stringify(
     drawn.map((d) => ({ id: d.card.id, name: d.card.name_ru, reversed: d.reversed }))
   );
+  const prevCount = getReadingsCount(ctx.from!.id);
   const readingId = saveReading(ctx.from!.id, spread.id, question, cardsJson, null);
   state.lastReadingId = readingId;
+
+  // Check level-up
+  const newCount = prevCount + 1;
+  const levelUp = checkLevelUp(prevCount, newCount);
+  if (levelUp) {
+    if (levelUp.bonus > 0) addFreeReadings(ctx.from!.id, levelUp.bonus);
+    await ctx.reply(
+      t("level.up", L, { emoji: levelUp.emoji, name: getLevelName(levelUp, L), bonus: levelUp.bonus }),
+      { parse_mode: "HTML" }
+    );
+  }
 
   await ctx.reply(
     t("reading.cards_drawn", L, { spread: ls.name, cards: cardsMsg }),
@@ -717,6 +825,8 @@ async function doReading(ctx: Context, state: UserState) {
 
     const afterKb = new InlineKeyboard()
       .text(t("btn.voice_reading", L), "voice_reading")
+      .row()
+      .text(t("btn.clarify_card", L), "clarify_card")
       .row()
       .text(t("btn.new_reading", L), "new_reading")
       .row()
@@ -762,6 +872,147 @@ bot.callbackQuery("voice_reading", async (ctx) => {
   const cancelKb = new InlineKeyboard().text(t("btn.cancel", L), "cancel_payment");
   await ctx.reply(t("voice.pay_prompt", L), { parse_mode: "HTML", reply_markup: cancelKb });
 });
+
+// ── Уточняющая карта ─────────────────────────────────────────────────────────
+
+bot.callbackQuery("clarify_card", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const state = getState(ctx.chat!.id);
+  const L = getLang(ctx);
+
+  if (!state.clarify) {
+    await ctx.reply(t("clarify.no_context", L), { parse_mode: "HTML" });
+    return;
+  }
+  if (state.clarify.clarifyCount >= 2) {
+    await ctx.reply(t("clarify.limit_reached", L), { parse_mode: "HTML" });
+    return;
+  }
+
+  // Single-card spread → skip position choice, go straight to payment
+  if (state.clarify.drawnCards.length === 1) {
+    state.clarifyPositionIdx = 0;
+    state.phase = "awaiting_payment";
+    await ctx.api.sendInvoice(
+      ctx.chat!.id,
+      "🔍",
+      t("btn.clarify_card", L),
+      "pay:clarify",
+      "XTR",
+      [{ label: "🔍", amount: 1 }],
+      { provider_token: "" }
+    );
+    const cancelKb = new InlineKeyboard().text(t("btn.cancel", L), "cancel_payment");
+    await ctx.reply(t("payment.required", L, { price: 1 }), { parse_mode: "HTML", reply_markup: cancelKb });
+    return;
+  }
+
+  // Multi-card spread → show position buttons
+  const kb = new InlineKeyboard();
+  state.clarify.positions.forEach((pos, i) => {
+    kb.text(`${i + 1}. ${pos}`, `clarify_pos:${i}`);
+    if (i < state.clarify!.positions.length - 1) kb.row();
+  });
+  await ctx.reply(t("clarify.choose_position", L), { parse_mode: "HTML", reply_markup: kb });
+});
+
+bot.callbackQuery(/^clarify_pos:(\d+)$/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const state = getState(ctx.chat!.id);
+  const L = getLang(ctx);
+
+  if (!state.clarify) {
+    await ctx.reply(t("clarify.no_context", L), { parse_mode: "HTML" });
+    return;
+  }
+
+  const idx = parseInt(ctx.match![1], 10);
+  if (idx < 0 || idx >= state.clarify.positions.length) return;
+
+  state.clarifyPositionIdx = idx;
+  state.phase = "awaiting_payment";
+
+  await ctx.api.sendInvoice(
+    ctx.chat!.id,
+    "🔍",
+    t("btn.clarify_card", L),
+    "pay:clarify",
+    "XTR",
+    [{ label: "🔍", amount: 1 }],
+    { provider_token: "" }
+  );
+  const cancelKb = new InlineKeyboard().text(t("btn.cancel", L), "cancel_payment");
+  await ctx.reply(t("payment.required", L, { price: 1 }), { parse_mode: "HTML", reply_markup: cancelKb });
+});
+
+async function doClarify(ctx: Context, state: UserState) {
+  const L = getLang(ctx);
+  const cl = state.clarify!;
+  const posIdx = state.clarifyPositionIdx ?? 0;
+  const isSingle = cl.drawnCards.length === 1;
+
+  await ctx.reply(t("clarify.drawing", L), { parse_mode: "HTML" });
+
+  // Draw a new card excluding all already used
+  const newCard = drawOneExcluding(cl.usedCardIds);
+  cl.usedCardIds.add(newCard.card.id);
+  cl.clarifyCount++;
+
+  const orient = t(newCard.reversed ? "common.reversed" : "common.upright", L);
+  const cardName = getCardName(newCard.card, L);
+  const mainCard = cl.drawnCards[posIdx];
+  const mainCardName = getCardName(getCardById(mainCard.card.id)!, L);
+
+  // Show card image
+  try {
+    await sendCardsMediaGroup(ctx.api, ctx.chat!.id, [newCard], L);
+  } catch (e) {
+    console.error("Clarify card image error:", e);
+  }
+
+  // Result message
+  const resultMsg = isSingle
+    ? t("clarify.result_single", L, { card: cardName, orient })
+    : t("clarify.result", L, { card: cardName, orient, position: cl.positions[posIdx] });
+
+  await ctx.reply(resultMsg, { parse_mode: "HTML" });
+
+  // LLM interpretation
+  try {
+    const prompt = isSingle
+      ? t("llm.clarify_prompt_single", L, {
+          question: cl.question,
+          main_card: mainCardName,
+          clarify_card: cardName,
+          orient,
+        })
+      : t("llm.clarify_prompt", L, {
+          position: cl.positions[posIdx],
+          question: cl.question,
+          main_card: mainCardName,
+          clarify_card: cardName,
+          orient,
+        });
+
+    const interpretation = await withChatAction(ctx, "typing", () =>
+      getClarifyInterpretation(prompt)
+    );
+
+    // After-clarify keyboard
+    const kb = new InlineKeyboard();
+    if (cl.clarifyCount < 2) {
+      kb.text(t("btn.clarify_card", L), "clarify_card").row();
+    }
+    kb.text(t("btn.new_reading", L), "new_reading");
+
+    await ctx.reply(interpretation, { reply_markup: kb });
+  } catch (err) {
+    console.error("Clarify LLM error:", err);
+    await ctx.reply(t("reading.llm_error", L), { parse_mode: "HTML" });
+  }
+
+  state.phase = "idle";
+}
 
 // ── Карта дня ───────────────────────────────────────────────────────────────
 bot.command("daily", async (ctx) => {

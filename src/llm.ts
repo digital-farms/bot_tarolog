@@ -78,6 +78,43 @@ export async function getInterpretation(
   return cleanLlmOutput(content.trim());
 }
 
+export async function getClarifyInterpretation(
+  prompt: string,
+): Promise<string> {
+  const apiKey = getEnv("OPENROUTER_API_KEY");
+  const model = process.env["OPENROUTER_MODEL"] || "openai/gpt-4o-mini";
+
+  const body = {
+    model,
+    messages: [{ role: "user" as const, content: prompt }],
+    max_tokens: 800,
+    temperature: 0.8,
+  };
+
+  const res = await fetch(OPENROUTER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`OpenRouter API error ${res.status}: ${errText}`);
+  }
+
+  const data = (await res.json()) as {
+    choices: { message: { content: string } }[];
+  };
+
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error("Empty response from LLM");
+
+  return cleanLlmOutput(content.trim());
+}
+
 function cleanLlmOutput(text: string): string {
   return text
     .replace(/<[^>]+>/g, "")

@@ -107,6 +107,14 @@ const MIGRATIONS = [
       ALTER TABLE users ADD COLUMN free_readings_left INTEGER NOT NULL DEFAULT 3;
     `,
   },
+  {
+    name: "004_referrals",
+    sql: `
+      ALTER TABLE users ADD COLUMN referred_by INTEGER DEFAULT NULL;
+      ALTER TABLE users ADD COLUMN referral_rewarded INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE users ADD COLUMN referral_count INTEGER NOT NULL DEFAULT 0;
+    `,
+  },
 ];
 
 // ── Users ───────────────────────────────────────────────────────────────────
@@ -146,6 +154,65 @@ export function decrementFreeReading(tgId: number): void {
   getDb()
     .prepare("UPDATE users SET free_readings_left = MAX(free_readings_left - 1, 0) WHERE tg_id = ?")
     .run(tgId);
+}
+
+export function addFreeReadings(tgId: number, count: number): void {
+  getDb()
+    .prepare("UPDATE users SET free_readings_left = free_readings_left + ? WHERE tg_id = ?")
+    .run(count, tgId);
+}
+
+export function getReadingsCount(tgId: number): number {
+  const row = getDb()
+    .prepare("SELECT COUNT(*) AS cnt FROM readings WHERE user_tg_id = ?")
+    .get(tgId) as { cnt: number } | undefined;
+  return row?.cnt ?? 0;
+}
+
+// ── Referrals ────────────────────────────────────────────────────────────────
+
+export function setReferrer(tgId: number, referrerTgId: number): boolean {
+  // Only set if not already referred and not self-referral
+  if (tgId === referrerTgId) return false;
+  const row = getDb()
+    .prepare("SELECT referred_by FROM users WHERE tg_id = ?")
+    .get(tgId) as { referred_by: number | null } | undefined;
+  if (!row || row.referred_by != null) return false;
+  getDb()
+    .prepare("UPDATE users SET referred_by = ? WHERE tg_id = ?")
+    .run(referrerTgId, tgId);
+  return true;
+}
+
+export function tryRewardReferrer(tgId: number): { referrerId: number; rewarded: boolean } | null {
+  const row = getDb()
+    .prepare("SELECT referred_by, referral_rewarded FROM users WHERE tg_id = ?")
+    .get(tgId) as { referred_by: number | null; referral_rewarded: number } | undefined;
+  if (!row || row.referred_by == null || row.referral_rewarded === 1) return null;
+
+  const referrerId = row.referred_by;
+  getDb().exec("BEGIN");
+  try {
+    getDb()
+      .prepare("UPDATE users SET referral_rewarded = 1 WHERE tg_id = ?")
+      .run(tgId);
+    getDb()
+      .prepare("UPDATE users SET free_readings_left = free_readings_left + 1, referral_count = referral_count + 1 WHERE tg_id = ?")
+      .run(referrerId);
+    getDb().exec("COMMIT");
+    return { referrerId, rewarded: true };
+  } catch (e) {
+    getDb().exec("ROLLBACK");
+    console.error("Referral reward error:", e);
+    return null;
+  }
+}
+
+export function getReferralCount(tgId: number): number {
+  const row = getDb()
+    .prepare("SELECT referral_count FROM users WHERE tg_id = ?")
+    .get(tgId) as { referral_count: number } | undefined;
+  return row?.referral_count ?? 0;
 }
 
 // ── Readings ────────────────────────────────────────────────────────────────
