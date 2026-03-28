@@ -12,6 +12,8 @@ export interface ReadingContext {
     reversed: boolean;
     keywords: string[];
     shortMeaning: string;
+    arcana: "major" | "minor";
+    suit: string | null;
   }[];
 }
 
@@ -34,6 +36,8 @@ export function buildReadingContext(
       shortMeaning: reversed
         ? d.card.short_reversed
         : d.card.short_upright,
+      arcana: d.card.arcana,
+      suit: d.card.suit,
     };
   });
 

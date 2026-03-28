@@ -9,18 +9,41 @@ function getEnv(key: string): string {
   return val;
 }
 
+const SUIT_KEYS: Record<string, string> = {
+  wands: "suit.wands", cups: "suit.cups", swords: "suit.swords", pentacles: "suit.pentacles",
+};
+
 function buildPrompt(ctx: ReadingContext, sensitive: boolean, lang: Lang = "ru"): string {
   const cardsBlock = ctx.positions
     .map((p) => {
       const orient = t(p.reversed ? "common.reversed" : "common.upright", lang);
+      const arcanaLabel = t(p.arcana === "major" ? "llm.arcana_major" : "llm.arcana_minor", lang);
+      const suitLabel = p.suit && SUIT_KEYS[p.suit] ? t(SUIT_KEYS[p.suit], lang) : "";
+      const typeLine = suitLabel ? `${arcanaLabel}, ${suitLabel}` : arcanaLabel;
       return [
         `${t("llm.position_label", lang)}: ${p.position}`,
-        `${t("llm.card_label", lang)}: ${p.cardName} (${orient})`,
+        `${t("llm.card_label", lang)}: ${p.cardName} (${orient}) [${typeLine}]`,
         `${t("llm.keywords_label", lang)}: ${p.keywords.join(", ")}`,
         `${t("llm.meaning_label", lang)}: ${p.shortMeaning}`,
       ].join("\n");
     })
     .join("\n\n");
+
+  // Summary: count major/minor, dominant suits
+  const majorCount = ctx.positions.filter(p => p.arcana === "major").length;
+  const minorCount = ctx.positions.filter(p => p.arcana === "minor").length;
+  const suitCounts: Record<string, number> = {};
+  for (const p of ctx.positions) {
+    if (p.suit) suitCounts[p.suit] = (suitCounts[p.suit] || 0) + 1;
+  }
+  const dominantSuits = Object.entries(suitCounts)
+    .filter(([, c]) => c >= 2)
+    .map(([s]) => SUIT_KEYS[s] ? t(SUIT_KEYS[s], lang) : s);
+
+  let summary = t("llm.spread_summary", lang, { major: majorCount, minor: minorCount, total: ctx.positions.length });
+  if (dominantSuits.length > 0) {
+    summary += " " + t("llm.dominant_suits", lang, { suits: dominantSuits.join(", ") });
+  }
 
   const sensitiveNote = sensitive ? t("llm.sensitive_note", lang) : "";
 
@@ -28,6 +51,7 @@ function buildPrompt(ctx: ReadingContext, sensitive: boolean, lang: Lang = "ru")
     question: ctx.question,
     spread_name: ctx.spread.name,
     cards_block: cardsBlock,
+    spread_summary: summary,
     sensitive_note: sensitiveNote,
   });
 }
